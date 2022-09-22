@@ -11,7 +11,7 @@ PubSubClient client(espClient);
 DynamicJsonDocument incoming_message(256);
 
 void setup_wifi() {
-    external const char* wifi_ssid
+    extern const char* wifi_ssid;
     delay(10);
     Serial.println();
     Serial.print("Conectando a: ");
@@ -62,10 +62,11 @@ void callback(char* topic, byte* payload, unsigned int length){
     String metodo = incoming_message["method"]; // Obtener del objeto Json, el método RPC solicitado
 
     // Ejecutar una acción de acuerdo al método solicitado
+  }
 }
 
 // Establecer y mantener la conexión con el servidor MQTT (En este caso de ThingsBoard)
-external const char* tb_device_token;
+extern const char* tb_device_token;
 void reconnect() {
   // Bucle hasta lograr la conexión
   while (!client.connected()) {
@@ -88,8 +89,8 @@ void reconnect() {
   }
     
 }
-external const char* tb_mqtt_server;
-external const int tb_mqqt_port;
+extern const char* tb_mqtt_server;
+extern const int tb_mqtt_port;
 
 /*========= SETUP =========*/
 
@@ -102,7 +103,8 @@ void setup() {
 
   // Sensores y actuadores
   
-}
+};
+
 bool movement = 0;
 void loop() {
 
@@ -122,7 +124,7 @@ void loop() {
   if (now - lastMsg > msgPeriod) {
     lastMsg = now;
     
-    movement = true //dht.readMovement();  // Read movement
+    movement = true; //dht.readMovement();  // Read movement
 
     // Publicar los datos en el tópio de telemetría para que el servidor los reciba
     DynamicJsonDocument resp(256);
