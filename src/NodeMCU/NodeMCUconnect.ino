@@ -32,6 +32,8 @@ void setup_wifi() {
     Serial.print("Dirección IP asignada: ");
     Serial.println(WiFi.localIP());
 }
+ unsigned long lastMsg = 0;  // Control de tiempo de reporte
+int msgPeriod = 2000;       // Actualizar los datos cada 2 segundos
 
 // Función de callback para recepción de mensajes MQTT 
 //(Tópicos a los que está suscrita la placa)
