@@ -130,7 +130,7 @@ void loop() {
 
     // Publicar los datos en el tópio de telemetría para que el servidor los reciba
     DynamicJsonDocument resp(256);
-    resp["movement"] = random(0,1); //temperature;  //Agrega el dato al Json, ej: "temperature": 21.5
+    resp["movement"] = random(0,2); //temperature;  //Agrega el dato al Json, ej: "temperature": 21.5
     char buffer[256];
     serializeJson(resp, buffer);
     client.publish("v1/devices/me/telemetry", buffer);  // Publica el mensaje de telemetría

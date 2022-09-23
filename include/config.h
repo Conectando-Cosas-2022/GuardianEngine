@@ -15,6 +15,6 @@ const char* wifi_password = "ORTWiFiIoT";
 */
 
 const char* tb_mqtt_server = "demo.thingsboard.io";
-const int tb_mqqt_port = 1883;
+const int tb_mqtt_port = 1883;
 
 const char* tb_device_token = "THvRrVwp3o7MyfXddS32";
