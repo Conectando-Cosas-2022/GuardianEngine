@@ -4,6 +4,7 @@
 #include "config.h"
 
 #define MSG_BUFFER_SIZE (50)
+#define PIR_PORT 5
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -104,7 +105,8 @@ void setup() {
   client.setCallback(callback);           // Establecer la función del callback para la llegada de mensajes en tópicos suscriptos
 
   // Sensores y actuadores
-  
+    pinMode(PIR_PORT, INPUT);
+
 };
 
 bool movement = 0;
@@ -130,7 +132,7 @@ void loop() {
 
     // Publicar los datos en el tópio de telemetría para que el servidor los reciba
     DynamicJsonDocument resp(256);
-    resp["movement"] = random(0,2); //temperature;  //Agrega el dato al Json, ej: "temperature": 21.5
+    resp["movement"] = digitalRead(PIR_PORT); //temperature;  //Agrega el dato al Json, ej: "temperature": 21.5
     char buffer[256];
     serializeJson(resp, buffer);
     client.publish("v1/devices/me/telemetry", buffer);  // Publica el mensaje de telemetría
