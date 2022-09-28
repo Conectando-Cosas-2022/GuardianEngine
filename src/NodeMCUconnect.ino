@@ -34,6 +34,42 @@ void setup_wifi() {
     Serial.println(WiFi.localIP());
 }
 
+void getNetworkScanInfo() {
+  Serial.println("Scan start");
+  // WiFi.scanNetworks will return the number of networks found
+  int n = WiFi.scanNetworks();
+  Serial.println("Scan done");
+  if (n == 0)
+    Serial.println("No networks found");
+  else {
+    Serial.print(n);
+    Serial.println(" networks found...");
+
+    // Print out the formatted json...
+    Serial.println("\"wifiAccessPoints\": [");
+    for (int i = 0; i < n; ++i) {
+      Serial.println("{");
+      Serial.print("\"macAddress\" : \"");    
+      Serial.print(WiFi.BSSIDstr(i));
+      Serial.println("\",");
+      Serial.print("\"signalStrength\": ");     
+      Serial.println(WiFi.RSSI(i));
+      if(i<n-1)
+      {
+      Serial.println("},");
+      }
+      else
+      {
+      Serial.println("}");  
+      } 
+    }
+    
+    Serial.println("]");
+    Serial.println("}");   
+    Serial.println(" ");
+  }    
+}
+
 unsigned long lastMsg = 0;  // Time report control
 int msgPeriod = 2000;       // Update data every 2 seconds
 
@@ -99,6 +135,7 @@ extern const int tb_mqtt_port;
 void setup() {
   // Connectivity
   Serial.begin(115200);                   // Initialize Serial connector to utilize Monitor
+  getNetworkScanInfo();
   setup_wifi();                           // Establish WiFi connection
   client.setServer(tb_mqtt_server, tb_mqtt_port); // Establish data for MQTT connection
   client.setCallback(callback);           // Establish callback function for topic requests
@@ -133,7 +170,7 @@ void loop() {
     serializeJson(resp, buffer);
     client.publish("v1/devices/me/telemetry", buffer);  // Publish telemetry message
     
-    Serial.print("Publicar mensaje [telemetry]: ");
+    Serial.print("Publish message [telemetry]: ");
     Serial.println(buffer);
     
   }
