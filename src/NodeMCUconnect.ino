@@ -15,10 +15,10 @@ void setup_wifi() {
     extern const char* wifi_ssid;
     delay(10);
     Serial.println();
-    Serial.print("Conectando a: ");
+    Serial.print("Connecting to: ");
     Serial.println(wifi_ssid);
 
-    WiFi.mode(WIFI_STA); // Declarar la ESP como STATION
+    WiFi.mode(WIFI_STA); // Declare the ESP as STATION
     WiFi.begin(wifi_ssid, wifi_password);
 
     while (WiFi.status() != WL_CONNECTED) {
@@ -29,22 +29,21 @@ void setup_wifi() {
     randomSeed(micros());
 
     Serial.println("");
-    Serial.println("¡Conectado!");
-    Serial.print("Dirección IP asignada: ");
+    Serial.println("Connected!");
+    Serial.print("Ip address assigned: ");
     Serial.println(WiFi.localIP());
 }
- unsigned long lastMsg = 0;  // Control de tiempo de reporte
-int msgPeriod = 2000;       // Actualizar los datos cada 2 segundos
 
-// Función de callback para recepción de mensajes MQTT 
-//(Tópicos a los que está suscrita la placa)
-// Se llama cada vez que arriba un mensaje entrante 
-//(En este ejemplo la placa se suscribirá al tópico: 
-//v1/devices/me/rpc/request/+)
+unsigned long lastMsg = 0;  // Time report control
+int msgPeriod = 2000;       // Update data every 2 seconds
+
+// Callback function for MQTT message reception
+// It gets called every time there is an incoming message 
+// Topic: v1/devices/me/rpc/request/+
 void callback(char* topic, byte* payload, unsigned int length){
 
-    // Log en Monitor Serie
-  Serial.print("Mensaje recibido [");
+  // Log Serial Monitor
+  Serial.print("Message received [");
   Serial.print(topic);
   Serial.print("]: ");
   for (int i = 0; i < length; i++) {
@@ -52,40 +51,40 @@ void callback(char* topic, byte* payload, unsigned int length){
   }
   Serial.println();
 
-  // En el nombre del tópico agrega un identificador del mensaje que queremos extraer para responder solicitudes
+  // In the topic name it adds a message identifier that we want to extract to respond to requests
   String _topic = String(topic);
 
-  // Detectar de qué tópico viene el "mensaje"
-  if (_topic.startsWith("v1/devices/me/rpc/request/")) { // El servidor "me pide que haga algo" (RPC)
-    // Obtener el número de solicitud (request number)
+  // Detect from which topic the message comes
+  if (_topic.startsWith("v1/devices/me/rpc/request/")) { // The server "asks me to do something" (RPC)
+    // (request number)
     String _request_id = _topic.substring(26);
 
-    // Leer el objeto JSON (Utilizando ArduinoJson)
-    deserializeJson(incoming_message, payload); // Interpretar el cuerpo del mensaje como Json
-    String metodo = incoming_message["method"]; // Obtener del objeto Json, el método RPC solicitado
-
-    // Ejecutar una acción de acuerdo al método solicitado
+    // Read JSON object (Using ArduinoJson)
+    deserializeJson(incoming_message, payload); // Interpreting JSON body
+    String metodo = incoming_message["method"]; // Obtain RCP method requested
+    
+    // Excecute requested method
   }
 }
 
-// Establecer y mantener la conexión con el servidor MQTT (En este caso de ThingsBoard)
+// Establish and maintain connection with the MQTT Server (ThingsBoard)
 extern const char* tb_device_token;
 void reconnect() {
   // Bucle hasta lograr la conexión
   while (!client.connected()) {
-    Serial.print("Intentando conectar MQTT...");
-    if (client.connect("ESP8266", tb_device_token, tb_device_token)) {  //Nombre del Device y Token para conectarse
-      Serial.println("¡Conectado!");
+    Serial.print("Trying to connect MQTT...");
+    if (client.connect("ESP8266", tb_device_token, tb_device_token)) {  // Name of the device and token to connect
+      Serial.println("Connected!");
       
-      // Una vez conectado, suscribirse al tópico para recibir solicitudes RPC
+      // Once connected, subscribe to the topic to receive RCP requests
       client.subscribe("v1/devices/me/rpc/request/+");
       
     } else {
       
       Serial.print("Error, rc = ");
       Serial.print(client.state());
-      Serial.println("Reintenar en 5 segundos...");
-      // Esperar 5 segundos antes de reintentar
+      Serial.println("Try again in 5 seconds...");
+      // Wait 5 seconds to try again
       delay(5000);
       
     }
@@ -98,44 +97,41 @@ extern const int tb_mqtt_port;
 /*========= SETUP =========*/
 
 void setup() {
-  // Conectividad
-  Serial.begin(115200);                   // Inicializar conexión Serie para utilizar el Monitor
-  setup_wifi();                           // Establecer la conexión WiFi
-  client.setServer(tb_mqtt_server, tb_mqtt_port);// Establecer los datos para la conexión MQTT
-  client.setCallback(callback);           // Establecer la función del callback para la llegada de mensajes en tópicos suscriptos
+  // Connectivity
+  Serial.begin(115200);                   // Initialize Serial connector to utilize Monitor
+  setup_wifi();                           // Establish WiFi connection
+  client.setServer(tb_mqtt_server, tb_mqtt_port); // Establish data for MQTT connection
+  client.setCallback(callback);           // Establish callback function for topic requests
 
-  // Sensores y actuadores
-    pinMode(PIR_PORT, INPUT);
+  // Sensors and actuators
+  pinMode(PIR_PORT, INPUT);
 
 };
 
 bool movement = 0;
 void loop() {
 
-  // === Conexión e intercambio de mensajes MQTT ===
-  if (!client.connected()) {  // Controlar en cada ciclo la conexión con el servidor
-    reconnect();              // Y recuperarla en caso de desconexión
+  // === Connection and MQTT messages exchange ===
+  if (!client.connected()) {  // Control in each server cycle
+    reconnect();              // And get it back up in case of disconnection
   }
   
-  client.loop();              // Controlar si hay mensajes entrantes o para enviar al servidor
+  client.loop();              // Control if there are incoming or outgoing server messages
      
-  // === Realizar las tareas asignadas al dispositivo ===
-  // En este caso se medirá temperatura y humedad para reportar periódicamente
-  // El control de tiempo se hace con millis para que no sea bloqueante y en "paralelo" completar
-  // ciclos del bucle principal
+  // === Do assigned tasks for the board ===
   
   unsigned long now = millis();
   if (now - lastMsg > msgPeriod) {
     lastMsg = now;
     
-    movement = true; //dht.readMovement();  // Read movement
+    movement = true;  // Read movement
 
-    // Publicar los datos en el tópio de telemetría para que el servidor los reciba
+    // Publish the data into the telemetry topic so the server can receive them
     DynamicJsonDocument resp(256);
-    resp["movement"] = digitalRead(PIR_PORT); //temperature;  //Agrega el dato al Json, ej: "temperature": 21.5
+    resp["movement"] = digitalRead(PIR_PORT);  // Add data to JSON
     char buffer[256];
     serializeJson(resp, buffer);
-    client.publish("v1/devices/me/telemetry", buffer);  // Publica el mensaje de telemetría
+    client.publish("v1/devices/me/telemetry", buffer);  // Publish telemetry message
     
     Serial.print("Publicar mensaje [telemetry]: ");
     Serial.println(buffer);
