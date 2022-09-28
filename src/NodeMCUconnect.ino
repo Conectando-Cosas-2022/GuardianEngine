@@ -34,7 +34,7 @@ void setup_wifi() {
     Serial.println(WiFi.localIP());
 }
 
-void getNetworkScanInfo() {
+String getNetworkScanInfo() {
   Serial.println("Scan start");
   // WiFi.scanNetworks will return the number of networks found
   int n = WiFi.scanNetworks();
@@ -68,6 +68,32 @@ void getNetworkScanInfo() {
     Serial.println("}");   
     Serial.println(" ");
   }    
+
+  // Now build the jsonString
+  String jsonString = "{\n";
+  jsonString +="\"wifiAccessPoints\": [\n";
+    for (int j = 0; j < n; ++j)
+    {
+      jsonString +="{\n";
+      jsonString +="\"macAddress\" : \"";    
+      jsonString +=(WiFi.BSSIDstr(j));
+      jsonString +="\",\n";
+      jsonString +="\"signalStrength\": ";     
+      jsonString +=WiFi.RSSI(j);
+      jsonString +="\n";
+      if(j<n-1)
+      {
+      jsonString +="},\n";
+      }
+      else
+      {
+      jsonString +="}\n";  
+      }
+    }
+    jsonString +=("]\n");
+    jsonString +=("}\n"); 
+
+  return jsonString;
 }
 
 unsigned long lastMsg = 0;  // Time report control
@@ -97,9 +123,22 @@ void callback(char* topic, byte* payload, unsigned int length){
 
     // Read JSON object (Using ArduinoJson)
     deserializeJson(incoming_message, payload); // Interpreting JSON body
-    String metodo = incoming_message["method"]; // Obtain RCP method requested
+    String method = incoming_message["method"]; // Obtain RCP method requested
     
     // Excecute requested method
+    if (method == "getNetworkInformation") { 
+      char outTopic[128];
+      ("v1/devices/me/rpc/response/"+_request_id).toCharArray(outTopic,128);
+
+      // Get network scan information
+      DynamicJsonDocument resp(256);
+      resp["data"] = getNetworkScanInfo();
+
+      char buffer[256];
+      serializeJson(resp, buffer);
+
+      client.publish(outTopic, buffer);
+    }
   }
 }
 
@@ -135,7 +174,6 @@ extern const int tb_mqtt_port;
 void setup() {
   // Connectivity
   Serial.begin(115200);                   // Initialize Serial connector to utilize Monitor
-  getNetworkScanInfo();
   setup_wifi();                           // Establish WiFi connection
   client.setServer(tb_mqtt_server, tb_mqtt_port); // Establish data for MQTT connection
   client.setCallback(callback);           // Establish callback function for topic requests
