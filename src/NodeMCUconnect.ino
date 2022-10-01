@@ -70,7 +70,7 @@ DynamicJsonDocument getNetworkScanInfo() {
   }    
 
   // Now build the Json object
-  DynamicJsonDocument netData(2048);
+  DynamicJsonDocument netData(1024);
   for (int j = 0; j < n; ++j) {
     netData["wifiAccessPoints"][j]["macAddress"] = WiFi.BSSIDstr(j);
     netData["wifiAccessPoints"][j]["signalStrength"] = WiFi.RSSI(j);
@@ -112,12 +112,13 @@ void callback(char* topic, byte* payload, unsigned int length){
     if (method == "getNetworkInformation") { 
       char outTopic[128];
       ("v1/devices/me/rpc/response/"+_request_id).toCharArray(outTopic,128);
-
+      Serial.println(outTopic);
+      
       // Get network scan information
-      DynamicJsonDocument resp(2048);
+      DynamicJsonDocument resp(1024);
       resp["data"] = getNetworkScanInfo();
 
-      char buffer[2048];
+      char buffer[1024];
       serializeJson(resp, buffer);
       Serial.println(buffer);
 
@@ -161,6 +162,8 @@ void setup() {
   setup_wifi();                           // Establish WiFi connection
   client.setServer(tb_mqtt_server, tb_mqtt_port); // Establish data for MQTT connection
   client.setCallback(callback);           // Establish callback function for topic requests
+  client.setBufferSize(2048); // Set Buffer size to be larger to sustain sending network json data
+
 
   // Sensors and actuators
   pinMode(PIR_PORT, INPUT);
