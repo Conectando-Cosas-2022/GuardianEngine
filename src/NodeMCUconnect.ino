@@ -34,7 +34,7 @@ void setup_wifi() {
     Serial.println(WiFi.localIP());
 }
 
-String getNetworkScanInfo() {
+DynamicJsonDocument getNetworkScanInfo() {
   Serial.println("Scan start");
   // WiFi.scanNetworks will return the number of networks found
   int n = WiFi.scanNetworks();
@@ -69,31 +69,14 @@ String getNetworkScanInfo() {
     Serial.println(" ");
   }    
 
-  // Now build the jsonString
-  String jsonString = "{\n";
-  jsonString +="\"wifiAccessPoints\": [\n";
-    for (int j = 0; j < n; ++j)
-    {
-      jsonString +="{\n";
-      jsonString +="\"macAddress\" : \"";    
-      jsonString +=(WiFi.BSSIDstr(j));
-      jsonString +="\",\n";
-      jsonString +="\"signalStrength\": ";     
-      jsonString +=WiFi.RSSI(j);
-      jsonString +="\n";
-      if(j<n-1)
-      {
-      jsonString +="},\n";
-      }
-      else
-      {
-      jsonString +="}\n";  
-      }
-    }
-    jsonString +=("]\n");
-    jsonString +=("}\n"); 
+  // Now build the Json object
+  DynamicJsonDocument netData(2048);
+  for (int j = 0; j < n; ++j) {
+    netData["wifiAccessPoints"][j]["macAddress"] = WiFi.BSSIDstr(j);
+    netData["wifiAccessPoints"][j]["signalStrength"] = WiFi.RSSI(j);
+  }
 
-  return jsonString;
+  return netData;
 }
 
 unsigned long lastMsg = 0;  // Time report control
@@ -131,13 +114,14 @@ void callback(char* topic, byte* payload, unsigned int length){
       ("v1/devices/me/rpc/response/"+_request_id).toCharArray(outTopic,128);
 
       // Get network scan information
-      DynamicJsonDocument resp(256);
+      DynamicJsonDocument resp(2048);
       resp["data"] = getNetworkScanInfo();
 
-      char buffer[256];
+      char buffer[2048];
       serializeJson(resp, buffer);
+      Serial.println(buffer);
 
-      client.publish(outTopic, buffer);
+      Serial.println(client.publish(outTopic, buffer));
     }
   }
 }
