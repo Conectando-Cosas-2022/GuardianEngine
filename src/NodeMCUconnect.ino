@@ -35,7 +35,7 @@ void setup_wifi() {
     Serial.println(WiFi.localIP());
 }
 
-String getNetworkScanInfo() {
+DynamicJsonDocument getNetworkScanInfo() {
   Serial.println("Scan start");
   // WiFi.scanNetworks will return the number of networks found
   int n = WiFi.scanNetworks();
@@ -55,10 +55,12 @@ String getNetworkScanInfo() {
       Serial.println("\",");
       Serial.print("\"signalStrength\": ");     
       Serial.println(WiFi.RSSI(i));
-      if(i<n-1) {
+      if(i<n-1)
+      {
       Serial.println("},");
       }
-      else{
+      else
+      {
       Serial.println("}");  
       } 
     }
@@ -68,30 +70,14 @@ String getNetworkScanInfo() {
     Serial.println(" ");
   }    
 
-  // Now build the jsonString
-  String jsonString = "{\n";
-  jsonString +="\"wifiAccessPoints\": [\n";
-    for (int j = 0; j < n; ++j) {
-      jsonString +="{\n";
-      jsonString +="\"macAddress\" : \"";    
-      jsonString +=(WiFi.BSSIDstr(j));
-      jsonString +="\",\n";
-      jsonString +="\"signalStrength\": ";     
-      jsonString +=WiFi.RSSI(j);
-      jsonString +="\n";
-      if(j<n-1)
-      {
-      jsonString +="},\n";
-      }
-      else
-      {
-      jsonString +="}\n";  
-      }
-    }
-    jsonString +=("]\n");
-    jsonString +=("}\n"); 
+  // Now build the Json object
+  DynamicJsonDocument netData(1024);
+  for (int j = 0; j < n; ++j) {
+    netData["wifiAccessPoints"][j]["macAddress"] = WiFi.BSSIDstr(j);
+    netData["wifiAccessPoints"][j]["signalStrength"] = WiFi.RSSI(j);
+  }
 
-  return jsonString;
+  return netData;
 }
 
 unsigned long lastMsg = 0;  // Time report control
@@ -127,15 +113,17 @@ void callback(char* topic, byte* payload, unsigned int length){
     if (method == "getNetworkInformation") { 
       char outTopic[128];
       ("v1/devices/me/rpc/response/"+_request_id).toCharArray(outTopic,128);
-
+      Serial.println(outTopic);
+      
       // Get network scan information
-      DynamicJsonDocument resp(256);
+      DynamicJsonDocument resp(1024);
       resp["data"] = getNetworkScanInfo();
 
-      char buffer[256];
+      char buffer[1024];
       serializeJson(resp, buffer);
+      Serial.println(buffer);
 
-      client.publish(outTopic, buffer);
+      Serial.println(client.publish(outTopic, buffer));
     }
   }
 }
@@ -175,10 +163,11 @@ void setup() {
   setup_wifi();                           // Establish WiFi connection
   client.setServer(tb_mqtt_server, tb_mqtt_port); // Establish data for MQTT connection
   client.setCallback(callback);           // Establish callback function for topic requests
+  client.setBufferSize(2048); // Set Buffer size to be larger to sustain sending network json data
+
 
   // Sensors and actuators
   pinMode(PIR_PORT, INPUT);
-  pinMode (PIR_PORT_Sol, OUTPUT);
 
 };
 
@@ -199,13 +188,11 @@ void loop() {
   if (now - lastMsg > msgPeriod) {
     lastMsg = now;
     
-    
+    movement = true;  // Read movement
 
     // Publish the data into the telemetry topic so the server can receive them
     DynamicJsonDocument resp(256);
     resp["movement"] = digitalRead(PIR_PORT);  // Add data to JSON
-    
-
     char buffer[256];
     serializeJson(resp, buffer);
     client.publish("v1/devices/me/telemetry", buffer);  // Publish telemetry message
