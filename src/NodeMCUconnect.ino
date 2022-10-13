@@ -129,12 +129,12 @@ void callback(char* topic, byte* payload, unsigned int length){
 }
 
 // Establish and maintain connection with the MQTT Server (ThingsBoard)
-extern const char* tb_device_token;
+extern const char* tb_device_token_1;
 void reconnect() {
   // Bucle hasta lograr la conexión
   while (!client.connected()) {
     Serial.print("Trying to connect MQTT...");
-    if (client.connect("ESP8266", tb_device_token, tb_device_token)) {  // Name of the device and token to connect
+    if (client.connect("ESP8266", tb_device_token_1, tb_device_token_1)) {  // Name of the device and token to connect
       Serial.println("Connected!");
       
       // Once connected, subscribe to the topic to receive RCP requests
