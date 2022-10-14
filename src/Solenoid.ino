@@ -63,11 +63,12 @@ void callback(char* topic, byte* payload, unsigned int length){
     String method = incoming_message["method"]; // Obtain RCP method requested
     
     // Excecute requested method
-    if (method == "lockDoors") { 
-          digitalWrite(PIR_PORT_Sol,1);  // Add data to JSON
+    if (method == "cutEngine") { 
+        Serial.println('Cutting engine...');
+        digitalWrite(PIR_PORT_Sol,0);  // Add data to JSON
     }
-    if (method == "unlockDoors") { 
-          digitalWrite(PIR_PORT_Sol,0);  // Add data to JSON
+    if (method == "openEngine") { 
+        digitalWrite(PIR_PORT_Sol,1);  // Add data to JSON
     }
   }
 }
@@ -112,7 +113,7 @@ void setup() {
 
   // Sensors and actuators
   pinMode(PIR_PORT_Sol, OUTPUT);
-
+  digitalWrite(PIR_PORT_Sol, 1);
 };
 
 bool movement = 0;
@@ -126,23 +127,4 @@ void loop() {
   
   client.loop();              // Control if there are incoming or outgoing server messages
      
-  // === Do assigned tasks for the board ===
-  
-  unsigned long now = millis();
-  if (now - lastMsg > msgPeriod) {
-    lastMsg = now;
-    
-    movement = true;  // Read movement
-
-    // Publish the data into the telemetry topic so the server can receive them
-    DynamicJsonDocument resp(256);
-    resp["movement"] = digitalRead(PIR_PORT_Sol);  // Add data to JSON
-    char buffer[256];
-    serializeJson(resp, buffer);
-    client.publish("v1/devices/me/telemetry", buffer);  // Publish telemetry message
-    
-    Serial.print("Publish message [telemetry]: ");
-    Serial.println(buffer);
-    
-  }
 }
