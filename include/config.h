@@ -7,10 +7,9 @@
  * WiFi credentials
 **/
 
-//const char* wifi_ssid = "HUAWEI-IoT";
-//const char* wifi_password = "ORTWiFiIoT";
-const char* wifi_ssid = "AntelYk2SP";
-const char* wifi_password = "r9agtnkf";
+const char* wifi_ssid = "HUAWEI-IoT";
+const char* wifi_password = "ORTWiFiIoT";
+
 /**
  * ThingsBoard
 */
