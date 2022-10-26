@@ -2,6 +2,7 @@
 ESP32-CAM MQTT
 */
 
+#include "Arduino.h"
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include "soc/soc.h"
