@@ -12,26 +12,26 @@ PubSubClient client(espClient);
 DynamicJsonDocument incoming_message(256);
 
 void setup_wifi() {
-    extern const char* wifi_ssid;
-    delay(10);
-    Serial.println();
-    Serial.print("Connecting to: ");
-    Serial.println(wifi_ssid);
+  extern const char* wifi_ssid;
+  delay(10);
+  Serial.println();
+  Serial.print("Connecting to: ");
+  Serial.println(wifi_ssid);
 
-    WiFi.mode(WIFI_STA); // Declare the ESP as STATION
-    WiFi.begin(wifi_ssid, wifi_password);
+  WiFi.mode(WIFI_STA); // Declare the ESP as STATION
+  WiFi.begin(wifi_ssid, wifi_password);
 
-    while (WiFi.status() != WL_CONNECTED) {
-        delay(500);
-        Serial.print(".");
-    }
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
 
-    randomSeed(micros());
+  randomSeed(micros());
 
-    Serial.println("");
-    Serial.println("Connected!");
-    Serial.print("Ip address assigned: ");
-    Serial.println(WiFi.localIP());
+  Serial.println("");
+  Serial.println("Connected!");
+  Serial.print("Ip address assigned: ");
+  Serial.println(WiFi.localIP());
 }
 
 unsigned long lastMsg = 0;  // Time report control
