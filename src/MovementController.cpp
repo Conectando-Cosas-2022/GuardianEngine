@@ -6,8 +6,6 @@
 
 #define MSG_BUFFER_SIZE (50)
 #define PIR_PORT 5 // Movement sensor
-#define PIR_PORT_Sol 16 // Solenoid
-#define PIR_PORT_Sol 16
 WiFiClient espClient;
 PubSubClient client(espClient);
 
@@ -173,7 +171,6 @@ void setup() {
 };
 
 bool movement = 0;
-bool solenoid = 0; 
 void loop() {
 
   // === Connection and MQTT messages exchange ===
