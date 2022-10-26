@@ -5,8 +5,8 @@ ESP32-CAM MQTT
 #include "Arduino.h"
 #include <WiFi.h>
 #include <PubSubClient.h>
-#include "soc/soc.h"
-#include "soc/rtc_cntl_reg.h"
+// #include "soc/soc.h"
+// #include "soc/rtc_cntl_reg.h"
 #include "esp_camera.h"
 #include "Base64.h"
 
@@ -43,69 +43,10 @@ PubSubClient client(espClient);
 #define HREF_GPIO_NUM     23
 #define PCLK_GPIO_NUM     22
 
-void setup() {
-  WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);
-    
-  Serial.begin(115200);
-  randomSeed(micros());
-
-  initCamera();
-  initWiFi();
-  client.setServer(mqtt_server, mqtt_port);
-  client.setCallback(callback);
-  client.setBufferSize(2048);
-}
-
-void loop() {
-  if (!client.connected()) {
-    reconnect();
-  }
-  client.loop();
-}
-
-void callback(char* topic, byte* payload, unsigned int length) {
-  // (request number)
-  String _request_id = _topic.substring(26);
-  
-  // Read JSON object (Using ArduinoJson)
-  deserializeJson(incoming_message, payload); // Interpreting JSON body
-  String method = incoming_message["method"]; // Obtain RCP method requested
-  
-  // Excecute requested method
-  if (method == "imageRequest") {
-    char outTopic[128];
-    ("v1/devices/me/rpc/response/"+_request_id).toCharArray(outTopic,128);
-    Serial.println(outTopic);
-
-    sendImage(outTopic);
-  }
-}
-
-void reconnect() {
-  // Loop until we're reconnected
-  while (!client.connected()) {
-    Serial.print("Attempting MQTT connection...");
-    // Attempt to connect
-    if (client.connect("ESP32CAM", ACCESS_TOKEN, ACCESS_TOKEN)) {
-      Serial.println("connected");
-      // Once connected, publish an announcement...
-      //client.publish(MQTT_PUBLISH_TOPIC, "hello world");
-      // ... and resubscribe
-      client.subscribe(MQTT_SUBSCRIBE_TOPIC);
-    } else {
-      Serial.print("failed, rc=");
-      Serial.print(client.state());
-      Serial.println(" try again in 5 seconds");
-      // Wait 5 seconds before retrying
-      delay(5000);
-    }
-  }
-}
-
 void initCamera() {
   camera_config_t config;
-  config.ledc_channel = LEDC_CHANNEL_0;
-  config.ledc_timer = LEDC_TIMER_0;
+  // config.ledc_channel = LEDC_CHANNEL_0;
+  // config.ledc_timer = LEDC_TIMER_0;
   config.pin_d0 = Y2_GPIO_NUM;
   config.pin_d1 = Y3_GPIO_NUM;
   config.pin_d2 = Y4_GPIO_NUM;
@@ -123,8 +64,8 @@ void initCamera() {
   config.pin_pwdn = PWDN_GPIO_NUM;
   config.pin_reset = RESET_GPIO_NUM;
   config.xclk_freq_hz = 20000000;
-  config.pixel_format = PIXFORMAT_JPEG;
-  
+  // config.pixel_format = PIXFORMAT_JPEG;
+
   //
   // WARNING!!! PSRAM IC required for UXGA resolution and high JPEG quality
   //            Ensure ESP32 Wrover Module or other board with PSRAM is selected
@@ -168,48 +109,26 @@ void initCamera() {
 }
 
 void initWiFi() {
-  WiFi.mode(WIFI_STA);
-  
-  for (int i=0;i<2;i++) {
-    WiFi.begin(ssid, password);
-  
-    delay(1000);
-    Serial.println("");
-    Serial.print("Connecting to ");
-    Serial.println(ssid);
-    
-    long int StartTime=millis();
+    extern const char* wifi_ssid;
+    delay(10);
+    Serial.println();
+    Serial.print("Connecting to: ");
+    Serial.println(wifi_ssid);
+
+    WiFi.mode(WIFI_STA); // Declare the ESP as STATION
+    WiFi.begin(wifi_ssid, wifi_password);
+
     while (WiFi.status() != WL_CONNECTED) {
         delay(500);
-        if ((StartTime+5000) < millis()) break;
-    } 
-  
-    if (WiFi.status() == WL_CONNECTED) {
-      Serial.println("");
-      Serial.println("STAIP address: ");
-      Serial.println(WiFi.localIP());
-      Serial.println("");
-  
-      pinMode(2, OUTPUT);
-      for (int j=0;j<5;j++) {
-        digitalWrite(2,HIGH);
-        delay(100);
-        digitalWrite(2,LOW);
-        delay(100);
-      }
-      break;
+        Serial.print(".");
     }
-  } 
 
-  if (WiFi.status() != WL_CONNECTED) {
-    pinMode(2, OUTPUT);
-    for (int k=0;k<2;k++) {
-      digitalWrite(2,HIGH);
-      delay(1000);
-      digitalWrite(2,LOW);
-      delay(1000);
-    }
-  } 
+    randomSeed(micros());
+
+    Serial.println("");
+    Serial.println("Connected!");
+    Serial.print("Ip address assigned: ");
+    Serial.println(WiFi.localIP());
 }
 
 String sendImage(String outTopic) {
@@ -256,4 +175,63 @@ String sendImage(String outTopic) {
   }
   esp_camera_fb_return(fb);
   return "failed, rc="+client.state();
+}
+
+void callback(char* topic, byte* payload, unsigned int length) {
+  // (request number)
+  String _request_id = _topic.substring(26);
+  
+  // Read JSON object (Using ArduinoJson)
+  deserializeJson(incoming_message, payload); // Interpreting JSON body
+  String method = incoming_message["method"]; // Obtain RCP method requested
+  
+  // Excecute requested method
+  if (method == "imageRequest") {
+    char outTopic[128];
+    ("v1/devices/me/rpc/response/"+_request_id).toCharArray(outTopic,128);
+    Serial.println(outTopic);
+
+    sendImage(outTopic);
+  }
+}
+
+void reconnect() {
+  // Loop until we're reconnected
+  while (!client.connected()) {
+    Serial.print("Attempting MQTT connection...");
+    // Attempt to connect
+    if (client.connect("ESP32CAM", ACCESS_TOKEN, ACCESS_TOKEN)) {
+      Serial.println("connected");
+      // Once connected, publish an announcement...
+      //client.publish(MQTT_PUBLISH_TOPIC, "hello world");
+      // ... and resubscribe
+      client.subscribe(MQTT_SUBSCRIBE_TOPIC);
+    } else {
+      Serial.print("failed, rc=");
+      Serial.print(client.state());
+      Serial.println(" try again in 5 seconds");
+      // Wait 5 seconds before retrying
+      delay(5000);
+    }
+  }
+}
+
+void setup() {
+  WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);
+    
+  Serial.begin(115200);
+  randomSeed(micros());
+
+  initCamera();
+  initWiFi();
+  client.setServer(mqtt_server, mqtt_port);
+  client.setCallback(callback);
+  client.setBufferSize(2048);
+}
+
+void loop() {
+  if (!client.connected()) {
+    reconnect();
+  }
+  client.loop();
 }
