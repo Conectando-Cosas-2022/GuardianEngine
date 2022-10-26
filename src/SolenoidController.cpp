@@ -57,18 +57,21 @@ void callback(char* topic, byte* payload, unsigned int length){
   // Detect from which topic the message comes
   if (_topic.startsWith("v1/devices/me/rpc/request/")) { // The server "asks me to do something" (RPC)
     // (request number)
+    Serial.println("Request received...");
     String _request_id = _topic.substring(26);
 
     // Read JSON object (Using ArduinoJson)
     deserializeJson(incoming_message, payload); // Interpreting JSON body
     String method = incoming_message["method"]; // Obtain RCP method requested
-    
+    Serial.print("method: ");
+    Serial.println(method);
+
     // Excecute requested method
     if (method == "cutEngine") { 
-        Serial.println('Cutting engine...');
+        Serial.println("Cutting engine...");
         digitalWrite(PIR_PORT_Sol,0);  // Add data to JSON
     }
-    if (method == "openEngine") { 
+    if (method == "rpcCommand") { 
         digitalWrite(PIR_PORT_Sol,1);  // Add data to JSON
     }
   }
