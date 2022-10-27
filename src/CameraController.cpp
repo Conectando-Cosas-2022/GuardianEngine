@@ -49,8 +49,8 @@ DynamicJsonDocument incoming_message(256);
 
 void initCamera() {
   camera_config_t config;
-  // config.ledc_channel = LEDC_CHANNEL_0;
-  // config.ledc_timer = LEDC_TIMER_0;
+  config.ledc_channel = LEDC_CHANNEL_0;
+  config.ledc_timer = LEDC_TIMER_0;
   config.pin_d0 = Y2_GPIO_NUM;
   config.pin_d1 = Y3_GPIO_NUM;
   config.pin_d2 = Y4_GPIO_NUM;
@@ -68,7 +68,7 @@ void initCamera() {
   config.pin_pwdn = PWDN_GPIO_NUM;
   config.pin_reset = RESET_GPIO_NUM;
   config.xclk_freq_hz = 20000000;
-  // config.pixel_format = PIXFORMAT_JPEG;
+  config.pixel_format = PIXFORMAT_JPEG;
 
   //
   // WARNING!!! PSRAM IC required for UXGA resolution and high JPEG quality
@@ -156,26 +156,26 @@ String sendImage(String outTopic) {
   clientId += String(random(0xffff), HEX);
   if (client.connect(clientId.c_str(), ACCESS_TOKEN, ACCESS_TOKEN)) {
     
-    client.beginPublish(outTopic, fbLen, true);
+    // client.beginPublish(outTopic, fbLen, true);
 
-    String str = "";
-    for (size_t n=0;n<fbLen;n=n+2048) {
-      if (n+2048<fbLen) {
-        str = imageFile.substring(n, n+2048);
-        client.write((uint8_t*)str.c_str(), 2048);
-      }
-      else if (fbLen%2048>0) {
-        size_t remainder = fbLen%2048;
-        str = imageFile.substring(n, n+remainder);
-        client.write((uint8_t*)str.c_str(), remainder);
-      }
-    }  
+    // String str = "";
+    // for (size_t n=0;n<fbLen;n=n+2048) {
+    //   if (n+2048<fbLen) {
+    //     str = imageFile.substring(n, n+2048);
+    //     client.write((uint8_t*)str.c_str(), 2048);
+    //   }
+    //   else if (fbLen%2048>0) {
+    //     size_t remainder = fbLen%2048;
+    //     str = imageFile.substring(n, n+remainder);
+    //     client.write((uint8_t*)str.c_str(), remainder);
+    //   }
+    // }  
     
-    client.endPublish();
+    // client.endPublish();
     
     esp_camera_fb_return(fb);
     
-    return "";
+    return imageFile;
   }
   esp_camera_fb_return(fb);
   return "failed, rc="+client.state();
