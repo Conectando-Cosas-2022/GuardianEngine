@@ -12,16 +12,8 @@ ESP32-CAM MQTT
 #include "Base64.h"
 #include "config.h"
 
-const char* ssid = "HUAWEI-IoT";
-const char* password = "ORTWiFiIoT";
-
-const char* mqtt_server = "demo.thingsboard.io";
-const unsigned int mqtt_port = 1883;
-#define MQTT_USER               ""
-#define MQTT_PASSWORD           ""
-#define MQTT_PUBLISH_TOPIC    "v1/devices/me/telemetry"
-#define MQTT_SUBSCRIBE_TOPIC    "v1/devices/me/rpc/request/+"
-#define ACCESS_TOKEN "vggG6d0lMBg8QPIzN4FX"
+#define MQTT_PUBLISH_TOPIC  "v1/devices/me/telemetry"
+#define MQTT_SUBSCRIBE_TOPIC  "v1/devices/me/rpc/request/+"
     
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -29,65 +21,53 @@ PubSubClient client(espClient);
 DynamicJsonDocument incoming_message(256);
 
 //ESP32-CAM 
-#define PWDN_GPIO_NUM     32
-#define RESET_GPIO_NUM    -1
-#define XCLK_GPIO_NUM      0
-#define SIOD_GPIO_NUM     26
-#define SIOC_GPIO_NUM     27
+#define CAM_PIN_PWDN 32
+#define CAM_PIN_RESET -1 //software reset will be performed
+#define CAM_PIN_XCLK 0
+#define CAM_PIN_SIOD 26
+#define CAM_PIN_SIOC 27
 
-#define Y9_GPIO_NUM       35
-#define Y8_GPIO_NUM       34
-#define Y7_GPIO_NUM       39
-#define Y6_GPIO_NUM       36
-#define Y5_GPIO_NUM       21
-#define Y4_GPIO_NUM       19
-#define Y3_GPIO_NUM       18
-#define Y2_GPIO_NUM        5
-#define VSYNC_GPIO_NUM    25
-#define HREF_GPIO_NUM     23
-#define PCLK_GPIO_NUM     22
+#define CAM_PIN_D7 35
+#define CAM_PIN_D6 34
+#define CAM_PIN_D5 39
+#define CAM_PIN_D4 36
+#define CAM_PIN_D3 21
+#define CAM_PIN_D2 19
+#define CAM_PIN_D1 18
+#define CAM_PIN_D0 5
+#define CAM_PIN_VSYNC 25
+#define CAM_PIN_HREF 23
+#define CAM_PIN_PCLK 22
+
+static camera_config_t config = {
+    .pin_pwdn = CAM_PIN_PWDN,
+    .pin_reset = CAM_PIN_RESET,
+    .pin_xclk = CAM_PIN_XCLK,
+    .pin_sccb_sda = CAM_PIN_SIOD,
+    .pin_sccb_scl = CAM_PIN_SIOC,
+
+    .pin_d7 = CAM_PIN_D7,
+    .pin_d6 = CAM_PIN_D6,
+    .pin_d5 = CAM_PIN_D5,
+    .pin_d4 = CAM_PIN_D4,
+    .pin_d3 = CAM_PIN_D3,
+    .pin_d2 = CAM_PIN_D2,
+    .pin_d1 = CAM_PIN_D1,
+    .pin_d0 = CAM_PIN_D0,
+    .pin_vsync = CAM_PIN_VSYNC,
+    .pin_href = CAM_PIN_HREF,
+    .pin_pclk = CAM_PIN_PCLK,
+    .xclk_freq_hz = 20000000,
+    .ledc_timer = LEDC_TIMER_0,
+    .ledc_channel = LEDC_CHANNEL_0,
+    .pixel_format = PIXFORMAT_RGB565,
+    .frame_size = FRAMESIZE_QVGA,
+    .jpeg_quality = 12,
+    .fb_count = 1,
+    .grab_mode = CAMERA_GRAB_WHEN_EMPTY,
+};
 
 void initCamera() {
-  camera_config_t config;
-  config.ledc_channel = LEDC_CHANNEL_0;
-  config.ledc_timer = LEDC_TIMER_0;
-  config.pin_d0 = Y2_GPIO_NUM;
-  config.pin_d1 = Y3_GPIO_NUM;
-  config.pin_d2 = Y4_GPIO_NUM;
-  config.pin_d3 = Y5_GPIO_NUM;
-  config.pin_d4 = Y6_GPIO_NUM;
-  config.pin_d5 = Y7_GPIO_NUM;
-  config.pin_d6 = Y8_GPIO_NUM;
-  config.pin_d7 = Y9_GPIO_NUM;
-  config.pin_xclk = XCLK_GPIO_NUM;
-  config.pin_pclk = PCLK_GPIO_NUM;
-  config.pin_vsync = VSYNC_GPIO_NUM;
-  config.pin_href = HREF_GPIO_NUM;
-  config.pin_sscb_sda = SIOD_GPIO_NUM;
-  config.pin_sscb_scl = SIOC_GPIO_NUM;
-  config.pin_pwdn = PWDN_GPIO_NUM;
-  config.pin_reset = RESET_GPIO_NUM;
-  config.xclk_freq_hz = 20000000;
-  config.pixel_format = PIXFORMAT_JPEG;
-
-  //
-  // WARNING!!! PSRAM IC required for UXGA resolution and high JPEG quality
-  //            Ensure ESP32 Wrover Module or other board with PSRAM is selected
-  //            Partial images will be transmitted if image exceeds buffer size
-  //   
-  // if PSRAM IC present, init with UXGA resolution and higher JPEG quality
-  //                      for larger pre-allocated frame buffer.
-  if(psramFound()){  //PSRAM(Psuedo SRAM)IC
-    config.frame_size = FRAMESIZE_UXGA;
-    config.jpeg_quality = 10;
-    config.fb_count = 2;
-  } else {
-    config.frame_size = FRAMESIZE_SVGA;
-    config.jpeg_quality = 12;
-    config.fb_count = 1;
-  }
-
- 
   esp_err_t err = esp_camera_init(&config);
   if (err != ESP_OK) {
     Serial.printf("Camera init failed with error 0x%x", err);
@@ -113,7 +93,6 @@ void initCamera() {
 }
 
 void initWiFi() {
-    extern const char* wifi_ssid;
     delay(10);
     Serial.println();
     Serial.print("Connecting to: ");
@@ -135,7 +114,7 @@ void initWiFi() {
     Serial.println(WiFi.localIP());
 }
 
-String sendImage(String outTopic) {
+String sendImage() {
   camera_fb_t * fb = NULL;
   fb = esp_camera_fb_get();  
   if(!fb) {
@@ -154,7 +133,7 @@ String sendImage(String outTopic) {
   
   String clientId = "ESP32-";
   clientId += String(random(0xffff), HEX);
-  if (client.connect(clientId.c_str(), ACCESS_TOKEN, ACCESS_TOKEN)) {
+  if (client.connect(clientId.c_str(), tb_device_token_cam, tb_device_token_cam)) {
     
     // client.beginPublish(outTopic, fbLen, true);
 
@@ -174,7 +153,6 @@ String sendImage(String outTopic) {
     // client.endPublish();
     
     esp_camera_fb_return(fb);
-    
     return imageFile;
   }
   esp_camera_fb_return(fb);
@@ -207,7 +185,14 @@ void callback(char* topic, byte* payload, unsigned int length) {
     ("v1/devices/me/rpc/response/"+_request_id).toCharArray(outTopic,128);
     Serial.println(outTopic);
 
-    sendImage(outTopic);
+    DynamicJsonDocument resp(1024);
+    resp["data"] = sendImage();
+
+    char buffer[1024];
+    serializeJson(resp, buffer);
+    Serial.println(buffer);
+
+    Serial.println(client.publish(outTopic, buffer));
   }
 }
 
@@ -216,7 +201,7 @@ void reconnect() {
   while (!client.connected()) {
     Serial.print("Attempting MQTT connection...");
     // Attempt to connect
-    if (client.connect("ESP32CAM", ACCESS_TOKEN, ACCESS_TOKEN)) {
+    if (client.connect("ESP32CAM", tb_device_token_cam, tb_device_token_cam)) {
       Serial.println("connected");
       // Once connected, publish an announcement...
       //client.publish(MQTT_PUBLISH_TOPIC, "hello world");
@@ -240,7 +225,7 @@ void setup() {
 
   initCamera();
   initWiFi();
-  client.setServer(mqtt_server, mqtt_port);
+  client.setServer(tb_mqtt_server, tb_mqtt_port);
   client.setCallback(callback);
   client.setBufferSize(2048);
 }
