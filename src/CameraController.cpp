@@ -5,10 +5,12 @@ ESP32-CAM MQTT
 #include "Arduino.h"
 #include <WiFi.h>
 #include <PubSubClient.h>
-// #include "soc/soc.h"
-// #include "soc/rtc_cntl_reg.h"
+#include <ArduinoJson.h>
+#include "soc/soc.h"
+#include "soc/rtc_cntl_reg.h"
 #include "esp_camera.h"
 #include "Base64.h"
+#include "config.h"
 
 const char* ssid = "HUAWEI-IoT";
 const char* password = "ORTWiFiIoT";
@@ -23,6 +25,8 @@ const unsigned int mqtt_port = 1883;
     
 WiFiClient espClient;
 PubSubClient client(espClient);
+
+DynamicJsonDocument incoming_message(256);
 
 //ESP32-CAM 
 #define PWDN_GPIO_NUM     32
@@ -178,6 +182,18 @@ String sendImage(String outTopic) {
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
+  // Log Serial Monitor
+  Serial.print("Message received [");
+  Serial.print(topic);
+  Serial.print("]: ");
+  for (unsigned int i = 0; i < length; i++) {
+    Serial.print((char)payload[i]);
+  }
+  Serial.println();
+
+  
+  // In the topic name it adds a message identifier that we want to extract to respond to requests
+  String _topic = String(topic);
   // (request number)
   String _request_id = _topic.substring(26);
   
