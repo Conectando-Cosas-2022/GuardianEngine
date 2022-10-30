@@ -62,7 +62,7 @@ void initWiFi() {
     Serial.println(WiFi.localIP());
 }
 
-String sendImage() {
+String sendImage(const char* outTopic) {
   camera_fb_t * fb = NULL;
   fb = esp_camera_fb_get();  
   if(!fb) {
@@ -81,8 +81,52 @@ String sendImage() {
   
   String clientId = "ESP32-";
   clientId += String(random(0xffff), HEX);
+  // Add length so that the json chars added are sent
+  int publishLen = fbLen + 17;
 
-  Serial.println(imageFile);
+  client.beginPublish(outTopic, publishLen, true);
+
+  // Format message into json
+  String str = "";
+  String jsonChar = "";
+  
+  jsonChar = "{";
+  Serial.println(jsonChar);
+  client.write((uint8_t*)jsonChar.c_str(), jsonChar.length());
+
+  str = "\"image\":";
+  Serial.println(str);
+  client.write((uint8_t*)str.c_str(), str.length());
+
+  jsonChar = "\"";
+  Serial.println(jsonChar);
+  client.write((uint8_t*)jsonChar.c_str(), jsonChar.length());
+
+  for (size_t n=0;n<fbLen;n=n+2048) {
+    if (n+2048<fbLen) {
+      str = imageFile.substring(n, n+2048);
+      Serial.println(str);
+      client.write((uint8_t*)str.c_str(), 2048);
+    }
+    else if (fbLen%2048>0) {
+      size_t remainder = fbLen%2048;
+      str = imageFile.substring(n, n+remainder);
+      Serial.println(str);
+      client.write((uint8_t*)str.c_str(), remainder);
+    }
+  }  
+
+
+  jsonChar = "\"";
+  Serial.println(jsonChar);
+  client.write((uint8_t*)jsonChar.c_str(), jsonChar.length());
+
+  jsonChar = "}";
+  Serial.println(jsonChar);
+  client.write((uint8_t*)jsonChar.c_str(), jsonChar.length());
+
+  client.endPublish();
+
   esp_camera_fb_return(fb);
   return imageFile;
 }
@@ -113,14 +157,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
     ("v1/devices/me/rpc/response/"+_request_id).toCharArray(outTopic,128);
     Serial.println(outTopic);
 
-    DynamicJsonDocument resp(4979);
-    resp["data"] = sendImage();
-
-    char buffer[4979];
-    serializeJson(resp, buffer);
-    Serial.println(buffer);
-
-    Serial.println(client.publish(outTopic, buffer));
+    sendImage(outTopic);
   }
 }
 
