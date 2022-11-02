@@ -585,7 +585,7 @@
       },
       "configuration" : {
         "scriptLang" : "JS",
-        "jsScript" : "return {\n    msg: {\n        method: \"imageRequest\",\n        params: {}\n    },\n    metadata: {\n        expirationTime: new Date().getTime() + 60000,\n        oneway: true,\n        persistent: true,\n        deviceName: \"ESP32 CAM\",\n        deviceType: \"Image data\"\n    },\n    msgType: \"RPC_CALL_FROM_SERVER_TO_DEVICE\"\n}\n",
+        "jsScript" : "return {\n    msg: {\n        method: \"imageRequest\",\n        params: {}\n    },\n    metadata: {\n        expirationTime: new Date().getTime() + 60000,\n        oneway: false,\n        persistent: false,\n        deviceName: \"ESP32 CAM\",\n        deviceType: \"Image data\"\n    },\n    msgType: \"RPC_CALL_FROM_SERVER_TO_DEVICE\"\n}\n",
         "mvelScript" : null
       },
       "createdTime" : 0,
@@ -600,7 +600,7 @@
       "type" : "org.thingsboard.rule.engine.transform.TbTransformMsgNode"
     }, {
       "additionalInfo" : {
-        "description" : "Send signal to lock engine",
+        "description" : "Send signal to get picture",
         "layoutX" : 1980,
         "layoutY" : 418
       },
@@ -620,8 +620,8 @@
     }, {
       "additionalInfo" : {
         "description" : "",
-        "layoutX" : 2535,
-        "layoutY" : 422
+        "layoutX" : 2530,
+        "layoutY" : 416
       },
       "configuration" : {
         "restEndpointUrlPattern" : "https://api-us.faceplusplus.com/humanbodypp/v2/segment",
