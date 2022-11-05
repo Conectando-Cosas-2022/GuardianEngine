@@ -82,50 +82,51 @@ String sendImage(const char* outTopic) {
   String clientId = "ESP32-";
   clientId += String(random(0xffff), HEX);
   // Add length so that the json chars added are sent
-  int publishLen = fbLen + 17;
+  int publishLen = fbLen + 200;
+  if (client.connect("ESP32CAM", tb_device_token_cam, tb_device_token_cam)) {
+    client.beginPublish(outTopic, publishLen, true);
 
-  client.beginPublish(outTopic, publishLen, true);
+    // Format message into json
+    String str = "";
+    String jsonChar = "";
+    
+    jsonChar = "{";
+    Serial.print(jsonChar);
+    client.write((uint8_t*)jsonChar.c_str(), jsonChar.length());
 
-  // Format message into json
-  String str = "";
-  String jsonChar = "";
-  
-  jsonChar = "{";
-  Serial.println(jsonChar);
-  client.write((uint8_t*)jsonChar.c_str(), jsonChar.length());
+    str = "\"image\":";
+    Serial.print(str);
+    client.write((uint8_t*)str.c_str(), str.length());
 
-  str = "\"image\":";
-  Serial.println(str);
-  client.write((uint8_t*)str.c_str(), str.length());
+    jsonChar = "\"";
+    Serial.print(jsonChar);
+    client.write((uint8_t*)jsonChar.c_str(), jsonChar.length());
 
-  jsonChar = "\"";
-  Serial.println(jsonChar);
-  client.write((uint8_t*)jsonChar.c_str(), jsonChar.length());
-
-  for (size_t n=0;n<fbLen;n=n+2048) {
-    if (n+2048<fbLen) {
-      str = imageFile.substring(n, n+2048);
-      Serial.println(str);
-      client.write((uint8_t*)str.c_str(), 2048);
-    }
-    else if (fbLen%2048>0) {
-      size_t remainder = fbLen%2048;
-      str = imageFile.substring(n, n+remainder);
-      Serial.println(str);
-      client.write((uint8_t*)str.c_str(), remainder);
-    }
-  }  
+    for (size_t n=0;n<fbLen;n=n+2048) {
+      if (n+2048<fbLen) {
+        str = imageFile.substring(n, n+2048);
+        Serial.print(str);
+        client.write((uint8_t*)str.c_str(), 2048);
+      }
+      else if (fbLen%2048>0) {
+        size_t remainder = fbLen%2048;
+        str = imageFile.substring(n, n+remainder);
+        Serial.print(str);
+        client.write((uint8_t*)str.c_str(), remainder);
+      }
+    }  
 
 
-  jsonChar = "\"";
-  Serial.println(jsonChar);
-  client.write((uint8_t*)jsonChar.c_str(), jsonChar.length());
+    jsonChar = "\"";
+    Serial.print(jsonChar);
+    client.write((uint8_t*)jsonChar.c_str(), jsonChar.length());
 
-  jsonChar = "}";
-  Serial.println(jsonChar);
-  client.write((uint8_t*)jsonChar.c_str(), jsonChar.length());
+    jsonChar = "}";
+    Serial.print(jsonChar);
+    client.write((uint8_t*)jsonChar.c_str(), jsonChar.length());
 
-  client.endPublish();
+    client.endPublish();
+  }
 
   esp_camera_fb_return(fb);
   return imageFile;
@@ -211,7 +212,7 @@ void setup() {
   config.pin_pwdn = PWDN_GPIO_NUM;
   config.pin_reset = RESET_GPIO_NUM;
   config.xclk_freq_hz = 20000000;
-  config.frame_size = FRAMESIZE_UXGA;
+  config.frame_size = FRAMESIZE_SVGA;
   config.pixel_format = PIXFORMAT_JPEG; // for streaming
   //config.pixel_format = PIXFORMAT_RGB565; // for face detection/recognition
   config.grab_mode = CAMERA_GRAB_WHEN_EMPTY;
