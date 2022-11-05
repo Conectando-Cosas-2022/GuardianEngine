@@ -4,6 +4,8 @@ ESP32-CAM MQTT
 
 #include "Arduino.h"
 #include <WiFi.h>
+#include <WiFiClientSecure.h>
+#include <HTTPClient.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include "soc/soc.h"
@@ -36,7 +38,9 @@ ESP32-CAM MQTT
 #define PCLK_GPIO_NUM     22
     
 WiFiClient espClient;
+WiFiClientSecure *clientSecure = new WiFiClientSecure;
 PubSubClient client(espClient);
+HTTPClient https;
 
 DynamicJsonDocument incoming_message(256);
 
@@ -62,7 +66,7 @@ void initWiFi() {
     Serial.println(WiFi.localIP());
 }
 
-String sendImage(const char* outTopic) {
+String sendImage() {
   camera_fb_t * fb = NULL;
   fb = esp_camera_fb_get();  
   if(!fb) {
@@ -77,59 +81,76 @@ String sendImage(const char* outTopic) {
     base64_encode(output, (input++), 3);
     if (i%3==0) imageFile += String(output);
   }
-  int fbLen = imageFile.length();
-  
-  String clientId = "ESP32-";
-  clientId += String(random(0xffff), HEX);
-  // Add length so that the json chars added are sent
-  int publishLen = fbLen + 200;
-  if (client.connect("ESP32CAM", tb_device_token_cam, tb_device_token_cam)) {
-    client.beginPublish(outTopic, publishLen, true);
-
-    // Format message into json
-    String str = "";
-    String jsonChar = "";
-    
-    jsonChar = "{";
-    Serial.print(jsonChar);
-    client.write((uint8_t*)jsonChar.c_str(), jsonChar.length());
-
-    str = "\"image\":";
-    Serial.print(str);
-    client.write((uint8_t*)str.c_str(), str.length());
-
-    jsonChar = "\"";
-    Serial.print(jsonChar);
-    client.write((uint8_t*)jsonChar.c_str(), jsonChar.length());
-
-    for (size_t n=0;n<fbLen;n=n+2048) {
-      if (n+2048<fbLen) {
-        str = imageFile.substring(n, n+2048);
-        Serial.print(str);
-        client.write((uint8_t*)str.c_str(), 2048);
-      }
-      else if (fbLen%2048>0) {
-        size_t remainder = fbLen%2048;
-        str = imageFile.substring(n, n+remainder);
-        Serial.print(str);
-        client.write((uint8_t*)str.c_str(), remainder);
-      }
-    }  
-
-
-    jsonChar = "\"";
-    Serial.print(jsonChar);
-    client.write((uint8_t*)jsonChar.c_str(), jsonChar.length());
-
-    jsonChar = "}";
-    Serial.print(jsonChar);
-    client.write((uint8_t*)jsonChar.c_str(), jsonChar.length());
-
-    client.endPublish();
-  }
 
   esp_camera_fb_return(fb);
   return imageFile;
+}
+
+// JsonObject apiCall(String image_base64) {
+    // int    HTTP_PORT   = 80;
+    // String HTTP_METHOD = "POST";
+    // char   HOST_NAME[] = "https://api-us.faceplusplus.com/humanbodypp/v2/segment";
+
+    // if(espClient.connect(HOST_NAME, HTTP_PORT)) {
+    //   Serial.println("Connected to server");
+    // } else {
+    //   Serial.println("connection failed");
+    // }
+    // send HTTP request header
+    // espClient.println(HTTP_METHOD + " " + " HTTP/1.1");
+    // espClient.println("Host: " + String(HOST_NAME));
+    // espClient.println("Connection: close");
+    // espClient.println("Content-Type: multipart/form-data");
+    // espClient.println(); // end HTTP request header
+
+    // // send http body
+    // String queryString = String("?image_base64=") + image_base64 + String("&api_key=") + String(api_key) + String("&api_secret=") + String(api_secret);
+    // client.println(queryString);
+
+    // while(espClient.available()) {
+    //   // read an incoming byte from the server and print them to serial monitor:
+    //   char c = espClient.read();
+    //   Serial.print(c);
+    // }
+
+    // if(!espClient.connected()) {
+    //   // if the server's disconnected, stop the client:
+    //   Serial.println("disconnected");
+    //   espClient.stop();
+    // }
+// }
+
+String apiCall(String image_base64) {  
+  String server = "https://api-us.faceplusplus.com/humanbodypp/v2/segment";
+
+  clientSecure -> setCACert(rootCACertificate);
+
+  https.begin(*clientSecure, server);
+  // Add headers
+  https.addHeader("Content-Type", "application/x-www-form-urlencoded");
+  // Data to send with HTTP POST
+  String httpRequestData = "api_key=" + (String)api_key + "&api_secret=" + String(api_secret) + "&image_base64=" + image_base64;           
+  // Send HTTP POST request
+  int httpResponseCode = https.POST(httpRequestData);
+
+  String response;
+  if (httpResponseCode > 0) {
+    response = https.getString();
+
+    Serial.print("Response code: ");
+    Serial.print(httpResponseCode);
+
+    Serial.print("Response data:");
+    Serial.print(response);
+  } else {
+    Serial.print("Error, error code: ");
+    Serial.print(httpResponseCode);
+    response = "Error " + (String)httpResponseCode ;
+  }
+  
+  https.end();
+
+  return response;
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
@@ -158,7 +179,10 @@ void callback(char* topic, byte* payload, unsigned int length) {
     ("v1/devices/me/rpc/response/"+_request_id).toCharArray(outTopic,128);
     Serial.println(outTopic);
 
-    sendImage(outTopic);
+    String image_base64 = sendImage();
+    Serial.println(image_base64.substring(0, 15) + "...");
+
+    String response = apiCall(image_base64);
   }
 }
 
