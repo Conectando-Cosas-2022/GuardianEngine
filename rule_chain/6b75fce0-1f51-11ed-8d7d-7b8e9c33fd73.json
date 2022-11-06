@@ -295,7 +295,7 @@
         "entityType" : "RULE_NODE",
         "id" : "e83d78e0-5afa-11ed-95b5-ab66be949308"
       },
-      "name" : "Google API",
+      "name" : "Google Location API",
       "ruleChainId" : null,
       "type" : "org.thingsboard.rule.engine.rest.TbRestApiCallNode"
     }, {
@@ -483,8 +483,8 @@
     }, {
       "additionalInfo" : {
         "description" : "",
-        "layoutX" : 1116,
-        "layoutY" : 322
+        "layoutX" : 1127,
+        "layoutY" : 316
       },
       "configuration" : {
         "jsScript" : "return msg.movement === 1;"
@@ -624,7 +624,7 @@
         "layoutY" : 416
       },
       "configuration" : {
-        "restEndpointUrlPattern" : "https://api-us.faceplusplus.com/humanbodypp/v2/segment",
+        "restEndpointUrlPattern" : "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyBA2nTY7akCcqkgwbYs4CKBaH0cE3am6H8",
         "requestMethod" : "POST",
         "useSimpleClientHttpFactory" : false,
         "ignoreRequestBody" : false,
@@ -654,7 +654,7 @@
         "entityType" : "RULE_NODE",
         "id" : "e84b3480-5afa-11ed-95b5-ab66be949308"
       },
-      "name" : "Face++ API",
+      "name" : "Google Vision API",
       "ruleChainId" : null,
       "type" : "org.thingsboard.rule.engine.rest.TbRestApiCallNode"
     }, {
@@ -665,7 +665,7 @@
       },
       "configuration" : {
         "scriptLang" : "JS",
-        "jsScript" : "var data = {\r\n    api_key: \"GyO-7OG5Tww2PH6ki4aMKZI2MBKrIhWE\",\r\n    api_secret: \"2Pzkps_MpZuLUNX-EgxEiNQs_yxy5hOl\",\r\n    image_base64: msg.image,\r\n};\r\n\r\nvar request = [];\r\nfor (var key in data) {\r\n     if (data.hasOwnProperty(key)) {\r\n           request.push(encodeURIComponent(key) + \"=\" + encodeURIComponent(data[key]));\r\n     }\r\n}\r\n\r\nvar newMsg = 'a=a&api_key=GyO-7OG5Tww2PH6ki4aMKZI2MBKrIhW&api_secret=2Pzkps_MpZuLUNX-EgxEiNQs_yxy5hOl&client=referer&referer=https://url.io&expiration=60&f=pjson&b=b';\r\n\r\nreturn {msg: newMsg, metadata: metadata, msgType: msgType};",
+        "jsScript" : "return {\n    \"msg\": {\n        \"requests\": [{\n            \"image\": {\n                \"source\": {\n                \"imageUri\": msg.url\n                }\n            },\n            \"features\": [{\n                    \"type\": \"FACE_DETECTION\"\n                }]\n        }]\n    },\n    \"msgType\": \"API_CALL_FROM_SERVER\"\n}",
         "mvelScript" : null
       },
       "createdTime" : 0,
