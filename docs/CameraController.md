@@ -27,6 +27,32 @@ Make an FTP server, upload the picture to it and send the image url instead.
 
 Originally the intention was to use the Face++ API. But due to problems with it (Only available to make a http post request with form-data body and not allowing urls like the one from the Ftp server) It was changed to the Google Vision API.
 
+## Flow diagram
+
+![UmlDiagram](https://www.planttext.com/api/plantuml/svg/RP51JyCm38Nl_XLMxxl0ZGCQGWpjLcs3UsXCQv759NRt-qcgCBNQZdQUNxvdRzLSikaS08mj4ExFhYVqpXn0SneuzlebBla6Dy_Ol1tRnuVc2G_jA_AiJFGxaHf4iLnmFnZC8ZJtGueZTpOb0eeUYmIgnUosExMeb2wKikN76CJvwbh-lrelTIkAEf989Lp8hxoNw6jU7IKgBO7BwtyVEudcE2fCAQ09sa1rb2CYbFBRnigpo7MpgtUHFY_qavKbuakxpnmxrnM4Jlh8LjhNZBVgEp7kZDSqsmoIh_W7)
+
+```plantuml
+@startuml
+
+title Image data
+
+"Thingsboard" -> "ESP32": RPC image request
+note right
+ESP32 takes picture
+end note
+"ESP32" -> "FTP server": Upload image data request
+"FTP server" -> "ESP32": Upload resolved
+"ESP32" -> "Thingsboard": RPC image response
+note right
+RPC response contains
+url to the image in  
+the ftp server
+end note
+"Thingsboard" -> "Google Vision API": Face recognition request
+"Google Vision API" -> "Thingsboard": Face recognition response
+@enduml
+```
+
 ## Google Vision API
 
 ###  HTTP METHOD: POST
