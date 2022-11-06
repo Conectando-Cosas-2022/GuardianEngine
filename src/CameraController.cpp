@@ -6,6 +6,7 @@ ESP32-CAM MQTT
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
+#include "ESP32_FTPClient.h"
 #include "soc/soc.h"
 #include "soc/rtc_cntl_reg.h"
 #include "esp_camera.h"
@@ -37,6 +38,7 @@ ESP32-CAM MQTT
     
 WiFiClient espClient;
 PubSubClient client(espClient);
+ESP32_FTPClient ftp (ftp_server, ftp_user, ftp_pass, 5000, 2);
 
 DynamicJsonDocument incoming_message(256);
 
@@ -62,7 +64,7 @@ void initWiFi() {
     Serial.println(WiFi.localIP());
 }
 
-String sendImage(const char* outTopic) {
+String sendImage(String id) {
   camera_fb_t * fb = NULL;
   fb = esp_camera_fb_get();  
   if(!fb) {
@@ -70,66 +72,30 @@ String sendImage(const char* outTopic) {
     return "Camera capture failed";
   }  
 
-  char *input = (char *)fb->buf;
-  char output[base64_enc_len(3)];
-  String imageFile = "data:image/jpeg;base64,";
-  for (int i=0;i<fb->len;i++) {
-    base64_encode(output, (input++), 3);
-    if (i%3==0) imageFile += String(output);
-  }
-  int fbLen = imageFile.length();
+  /*
+   * Upload to ftp server
+   */
   
-  String clientId = "ESP32-";
-  clientId += String(random(0xffff), HEX);
-  // Add length so that the json chars added are sent
-  int publishLen = fbLen + 200;
-  if (client.connect("ESP32CAM", tb_device_token_cam, tb_device_token_cam)) {
-    client.beginPublish(outTopic, publishLen, true);
+  Serial.println("Connecting to FTP server...");
+  
+  ftp.OpenConnection();  
+  ftp.ChangeWorkDir(ftp_path);
+  ftp.InitFile("Type I");
 
-    // Format message into json
-    String str = "";
-    String jsonChar = "";
-    
-    jsonChar = "{";
-    Serial.print(jsonChar);
-    client.write((uint8_t*)jsonChar.c_str(), jsonChar.length());
-
-    str = "\"image\":";
-    Serial.print(str);
-    client.write((uint8_t*)str.c_str(), str.length());
-
-    jsonChar = "\"";
-    Serial.print(jsonChar);
-    client.write((uint8_t*)jsonChar.c_str(), jsonChar.length());
-
-    for (size_t n=0;n<fbLen;n=n+2048) {
-      if (n+2048<fbLen) {
-        str = imageFile.substring(n, n+2048);
-        Serial.print(str);
-        client.write((uint8_t*)str.c_str(), 2048);
-      }
-      else if (fbLen%2048>0) {
-        size_t remainder = fbLen%2048;
-        str = imageFile.substring(n, n+remainder);
-        Serial.print(str);
-        client.write((uint8_t*)str.c_str(), remainder);
-      }
-    }  
-
-
-    jsonChar = "\"";
-    Serial.print(jsonChar);
-    client.write((uint8_t*)jsonChar.c_str(), jsonChar.length());
-
-    jsonChar = "}";
-    Serial.print(jsonChar);
-    client.write((uint8_t*)jsonChar.c_str(), jsonChar.length());
-
-    client.endPublish();
-  }
+  String fileName = "img" + id +".jpg";
+  Serial.println("Uploading "+ fileName);
+  int str_len = fileName.length() + 1; 
+ 
+  char char_array[str_len];
+  fileName.toCharArray(char_array, str_len);
+  
+  ftp.NewFile(char_array);
+  ftp.WriteData( fb->buf, fb->len );
+  ftp.CloseFile();
+  ftp.CloseConnection();
 
   esp_camera_fb_return(fb);
-  return imageFile;
+  return fileName;
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
@@ -158,7 +124,18 @@ void callback(char* topic, byte* payload, unsigned int length) {
     ("v1/devices/me/rpc/response/"+_request_id).toCharArray(outTopic,128);
     Serial.println(outTopic);
 
-    sendImage(outTopic);
+    String urlDestination = sendImage(_request_id);
+    String url = (String)web_url + "/" + (String)urlDestination;
+    Serial.println(url);
+
+    DynamicJsonDocument resp(1024);
+    resp["url"] = url;
+
+    char buffer[1024];
+    serializeJson(resp, buffer);
+    Serial.println(buffer);
+
+    Serial.println(client.publish(outTopic, buffer));
   }
 }
 
@@ -277,7 +254,7 @@ void setup() {
   initWiFi();
   client.setServer(tb_mqtt_server, tb_mqtt_port);
   client.setCallback(callback);
-  client.setBufferSize(8192);
+  client.setBufferSize(2048);
 }
 
 void loop() {
