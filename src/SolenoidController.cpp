@@ -1,82 +1,37 @@
+#include "Arduino.h"
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include "config.h"
 
 #define MSG_BUFFER_SIZE (50)
-#define PIR_PORT 5
-
+#define PIR_PORT_Sol 16 // Solenoid
 WiFiClient espClient;
 PubSubClient client(espClient);
 
 DynamicJsonDocument incoming_message(256);
 
 void setup_wifi() {
-    extern const char* wifi_ssid;
-    delay(10);
-    Serial.println();
-    Serial.print("Connecting to: ");
-    Serial.println(wifi_ssid);
+  extern const char* wifi_ssid;
+  delay(10);
+  Serial.println();
+  Serial.print("Connecting to: ");
+  Serial.println(wifi_ssid);
 
-    WiFi.mode(WIFI_STA); // Declare the ESP as STATION
-    WiFi.begin(wifi_ssid, wifi_password);
+  WiFi.mode(WIFI_STA); // Declare the ESP as STATION
+  WiFi.begin(wifi_ssid, wifi_password);
 
-    while (WiFi.status() != WL_CONNECTED) {
-        delay(500);
-        Serial.print(".");
-    }
-
-    randomSeed(micros());
-
-    Serial.println("");
-    Serial.println("Connected!");
-    Serial.print("Ip address assigned: ");
-    Serial.println(WiFi.localIP());
-}
-
-DynamicJsonDocument getNetworkScanInfo() {
-  Serial.println("Scan start");
-  // WiFi.scanNetworks will return the number of networks found
-  int n = WiFi.scanNetworks();
-  Serial.println("Scan done");
-  if (n == 0)
-    Serial.println("No networks found");
-  else {
-    Serial.print(n);
-    Serial.println(" networks found...");
-
-    // Print out the formatted json...
-    Serial.println("\"wifiAccessPoints\": [");
-    for (int i = 0; i < n; ++i) {
-      Serial.println("{");
-      Serial.print("\"macAddress\" : \"");    
-      Serial.print(WiFi.BSSIDstr(i));
-      Serial.println("\",");
-      Serial.print("\"signalStrength\": ");     
-      Serial.println(WiFi.RSSI(i));
-      if(i<n-1)
-      {
-      Serial.println("},");
-      }
-      else
-      {
-      Serial.println("}");  
-      } 
-    }
-    
-    Serial.println("]");
-    Serial.println("}");   
-    Serial.println(" ");
-  }    
-
-  // Now build the Json object
-  DynamicJsonDocument netData(1024);
-  for (int j = 0; j < n; ++j) {
-    netData["wifiAccessPoints"][j]["macAddress"] = WiFi.BSSIDstr(j);
-    netData["wifiAccessPoints"][j]["signalStrength"] = WiFi.RSSI(j);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
   }
 
-  return netData;
+  randomSeed(micros());
+
+  Serial.println("");
+  Serial.println("Connected!");
+  Serial.print("Ip address assigned: ");
+  Serial.println(WiFi.localIP());
 }
 
 unsigned long lastMsg = 0;  // Time report control
@@ -102,38 +57,33 @@ void callback(char* topic, byte* payload, unsigned int length){
   // Detect from which topic the message comes
   if (_topic.startsWith("v1/devices/me/rpc/request/")) { // The server "asks me to do something" (RPC)
     // (request number)
+    Serial.println("Request received...");
     String _request_id = _topic.substring(26);
 
     // Read JSON object (Using ArduinoJson)
     deserializeJson(incoming_message, payload); // Interpreting JSON body
     String method = incoming_message["method"]; // Obtain RCP method requested
-    
+    Serial.print("method: ");
+    Serial.println(method);
+
     // Excecute requested method
-    if (method == "getNetworkInformation") { 
-      char outTopic[128];
-      ("v1/devices/me/rpc/response/"+_request_id).toCharArray(outTopic,128);
-      Serial.println(outTopic);
-      
-      // Get network scan information
-      DynamicJsonDocument resp(1024);
-      resp["data"] = getNetworkScanInfo();
-
-      char buffer[1024];
-      serializeJson(resp, buffer);
-      Serial.println(buffer);
-
-      Serial.println(client.publish(outTopic, buffer));
+    if (method == "cutEngine") { 
+        Serial.println("Cutting engine...");
+        digitalWrite(PIR_PORT_Sol,0);  // Add data to JSON
+    }
+    if (method == "rpcCommand") { 
+        digitalWrite(PIR_PORT_Sol,1);  // Add data to JSON
     }
   }
 }
 
 // Establish and maintain connection with the MQTT Server (ThingsBoard)
-extern const char* tb_device_token;
+extern const char* tb_device_token_2;
 void reconnect() {
   // Bucle hasta lograr la conexión
   while (!client.connected()) {
     Serial.print("Trying to connect MQTT...");
-    if (client.connect("ESP8266", tb_device_token, tb_device_token)) {  // Name of the device and token to connect
+    if (client.connect("ESP8266", tb_device_token_2, tb_device_token_2)) {  // Name of the device and token to connect
       Serial.println("Connected!");
       
       // Once connected, subscribe to the topic to receive RCP requests
@@ -166,11 +116,12 @@ void setup() {
 
 
   // Sensors and actuators
-  pinMode(PIR_PORT, INPUT);
-
+  pinMode(PIR_PORT_Sol, OUTPUT);
+  digitalWrite(PIR_PORT_Sol, 1);
 };
 
 bool movement = 0;
+bool solenoid = 0; 
 void loop() {
 
   // === Connection and MQTT messages exchange ===
@@ -180,23 +131,4 @@ void loop() {
   
   client.loop();              // Control if there are incoming or outgoing server messages
      
-  // === Do assigned tasks for the board ===
-  
-  unsigned long now = millis();
-  if (now - lastMsg > msgPeriod) {
-    lastMsg = now;
-    
-    movement = true;  // Read movement
-
-    // Publish the data into the telemetry topic so the server can receive them
-    DynamicJsonDocument resp(256);
-    resp["movement"] = digitalRead(PIR_PORT);  // Add data to JSON
-    char buffer[256];
-    serializeJson(resp, buffer);
-    client.publish("v1/devices/me/telemetry", buffer);  // Publish telemetry message
-    
-    Serial.print("Publish message [telemetry]: ");
-    Serial.println(buffer);
-    
-  }
 }
