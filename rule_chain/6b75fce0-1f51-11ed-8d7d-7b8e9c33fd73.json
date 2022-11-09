@@ -22,7 +22,7 @@
   "metaData" : {
     "connections" : [ {
       "fromIndex" : 0,
-      "toIndex" : 17,
+      "toIndex" : 14,
       "type" : "Success"
     }, {
       "fromIndex" : 2,
@@ -79,41 +79,45 @@
     }, {
       "fromIndex" : 14,
       "toIndex" : 15,
-      "type" : "Success"
+      "type" : "True"
     }, {
-      "fromIndex" : 16,
-      "toIndex" : 14,
-      "type" : "Success"
-    }, {
-      "fromIndex" : 17,
+      "fromIndex" : 14,
       "toIndex" : 16,
+      "type" : "False"
+    }, {
+      "fromIndex" : 14,
+      "toIndex" : 17,
       "type" : "True"
     }, {
       "fromIndex" : 17,
       "toIndex" : 18,
-      "type" : "True"
+      "type" : "Success"
     }, {
-      "fromIndex" : 17,
+      "fromIndex" : 18,
       "toIndex" : 19,
-      "type" : "False"
+      "type" : "Success"
     }, {
-      "fromIndex" : 17,
-      "toIndex" : 20,
-      "type" : "True"
-    }, {
-      "fromIndex" : 20,
+      "fromIndex" : 19,
       "toIndex" : 21,
       "type" : "Success"
     }, {
-      "fromIndex" : 21,
+      "fromIndex" : 20,
       "toIndex" : 22,
       "type" : "Success"
     }, {
+      "fromIndex" : 21,
+      "toIndex" : 20,
+      "type" : "Success"
+    }, {
       "fromIndex" : 22,
+      "toIndex" : 25,
+      "type" : "True"
+    }, {
+      "fromIndex" : 23,
       "toIndex" : 24,
       "type" : "Success"
     }, {
-      "fromIndex" : 24,
+      "fromIndex" : 25,
       "toIndex" : 23,
       "type" : "Success"
     } ],
@@ -417,72 +421,6 @@
     }, {
       "additionalInfo" : {
         "description" : "",
-        "layoutX" : 1619,
-        "layoutY" : 245
-      },
-      "configuration" : {
-        "jsScript" : "return {\n    msg: {\n        method: \"cutEngine\",\n        params: {}\n    },\n    metadata: {\n        expirationTime: new Date().getTime() + 60000,\n        oneway: true,\n        persistent: true,\n        deviceName: \"NodeMCU ESP8266 2\",\n        deviceType: \"Lock system\"\n    },\n    msgType: \"RPC_CALL_FROM_SERVER_TO_DEVICE\"\n}\n"
-      },
-      "createdTime" : 0,
-      "debugMode" : true,
-      "externalId" : null,
-      "id" : {
-        "entityType" : "RULE_NODE",
-        "id" : "e843ba70-5afa-11ed-95b5-ab66be949308"
-      },
-      "name" : "Send engine RPC request",
-      "ruleChainId" : null,
-      "type" : "org.thingsboard.rule.engine.transform.TbTransformMsgNode"
-    }, {
-      "additionalInfo" : {
-        "description" : "Send signal to lock engine",
-        "layoutX" : 1928,
-        "layoutY" : 239
-      },
-      "configuration" : {
-        "timeoutInSeconds" : 60
-      },
-      "createdTime" : 0,
-      "debugMode" : true,
-      "externalId" : null,
-      "id" : {
-        "entityType" : "RULE_NODE",
-        "id" : "e84456b0-5afa-11ed-95b5-ab66be949308"
-      },
-      "name" : "RPC call request",
-      "ruleChainId" : null,
-      "type" : "org.thingsboard.rule.engine.rpc.TbSendRPCRequestNode"
-    }, {
-      "additionalInfo" : {
-        "description" : "",
-        "layoutX" : 1364,
-        "layoutY" : 312
-      },
-      "configuration" : {
-        "originatorSource" : "RELATED",
-        "relationsQuery" : {
-          "fetchLastLevelOnly" : false,
-          "direction" : "TO",
-          "maxLevel" : 1,
-          "filters" : [ {
-            "relationType" : "Uses",
-            "entityTypes" : [ "DEVICE" ]
-          } ]
-        }
-      },
-      "createdTime" : 0,
-      "debugMode" : true,
-      "externalId" : null,
-      "id" : {
-        "entityType" : "RULE_NODE",
-        "id" : "e844cbe0-5afa-11ed-95b5-ab66be949308"
-      },
-      "name" : "Change target",
-      "ruleChainId" : null,
-      "type" : "org.thingsboard.rule.engine.transform.TbChangeOriginatorNode"
-    }, {
-      "additionalInfo" : {
-        "description" : "",
         "layoutX" : 1127,
         "layoutY" : 316
       },
@@ -678,6 +616,93 @@
       "name" : "Convert body",
       "ruleChainId" : null,
       "type" : "org.thingsboard.rule.engine.transform.TbTransformMsgNode"
+    }, {
+      "additionalInfo" : {
+        "description" : "",
+        "layoutX" : 2842,
+        "layoutY" : 420
+      },
+      "configuration" : {
+        "scriptLang" : "JS",
+        "jsScript" : "if (msg.responses && msg.responses.faceAnnotations) {\n    return true\n}\nreturn false",
+        "mvelScript" : ""
+      },
+      "createdTime" : 0,
+      "debugMode" : true,
+      "externalId" : null,
+      "id" : {
+        "entityType" : "RULE_NODE",
+        "id" : "f1e3d960-5fc9-11ed-885b-d1d049781439"
+      },
+      "name" : "Face Recognised",
+      "ruleChainId" : null,
+      "type" : "org.thingsboard.rule.engine.filter.TbJsFilterNode"
+    }, {
+      "additionalInfo" : {
+        "description" : "",
+        "layoutX" : 3363,
+        "layoutY" : 411
+      },
+      "configuration" : {
+        "jsScript" : "return {\n    msg: {\n        method: \"cutEngine\",\n        params: {}\n    },\n    metadata: {\n        expirationTime: new Date().getTime() + 60000,\n        oneway: true,\n        persistent: true,\n        deviceName: \"NodeMCU ESP8266 2\",\n        deviceType: \"Lock system\"\n    },\n    msgType: \"RPC_CALL_FROM_SERVER_TO_DEVICE\"\n}\n"
+      },
+      "createdTime" : 0,
+      "debugMode" : true,
+      "externalId" : null,
+      "id" : {
+        "entityType" : "RULE_NODE",
+        "id" : "112f52e0-5fca-11ed-885b-d1d049781439"
+      },
+      "name" : "Send engine RPC request",
+      "ruleChainId" : null,
+      "type" : "org.thingsboard.rule.engine.transform.TbTransformMsgNode"
+    }, {
+      "additionalInfo" : {
+        "description" : "Send signal to lock engine",
+        "layoutX" : 3631,
+        "layoutY" : 407
+      },
+      "configuration" : {
+        "timeoutInSeconds" : 60
+      },
+      "createdTime" : 0,
+      "debugMode" : true,
+      "externalId" : null,
+      "id" : {
+        "entityType" : "RULE_NODE",
+        "id" : "11354650-5fca-11ed-885b-d1d049781439"
+      },
+      "name" : "RPC call request",
+      "ruleChainId" : null,
+      "type" : "org.thingsboard.rule.engine.rpc.TbSendRPCRequestNode"
+    }, {
+      "additionalInfo" : {
+        "description" : "",
+        "layoutX" : 3095,
+        "layoutY" : 417
+      },
+      "configuration" : {
+        "originatorSource" : "RELATED",
+        "relationsQuery" : {
+          "fetchLastLevelOnly" : false,
+          "direction" : "TO",
+          "maxLevel" : 1,
+          "filters" : [ {
+            "relationType" : "Uses",
+            "entityTypes" : [ "DEVICE" ]
+          } ]
+        }
+      },
+      "createdTime" : 0,
+      "debugMode" : true,
+      "externalId" : null,
+      "id" : {
+        "entityType" : "RULE_NODE",
+        "id" : "11421790-5fca-11ed-885b-d1d049781439"
+      },
+      "name" : "Change target",
+      "ruleChainId" : null,
+      "type" : "org.thingsboard.rule.engine.transform.TbChangeOriginatorNode"
     } ],
     "ruleChainConnections" : null
   },
