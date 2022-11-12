@@ -63,34 +63,32 @@ void callback(char* topic, byte* payload, unsigned int length){
     deserializeJson(incoming_message, payload); // Interpreting JSON body
     String method = incoming_message["method"]; // Obtain RCP method requested
 
-    switch (method) {
-        case "getCurrentState":
+    if (method == "getCurrentState") {
+      char outTopic[128];
+      ("v1/devices/me/rpc/response/"+_request_id).toCharArray(outTopic,128);
+      Serial.println(outTopic);
 
-            char outTopic[128];
-            ("v1/devices/me/rpc/response/"+_request_id).toCharArray(outTopic,128);
-            Serial.println(outTopic);
+      char buffer[1024];
 
-            char buffer[1024];
+      // Get network scan information
+      DynamicJsonDocument resp(1024);
+      resp["smoke"] = digitalRead(PIR_PORT);
 
-            // Get network scan information
-            DynamicJsonDocument resp(1024);
-            resp["smoke"] = digitalRead(PIR_PORT);
+      serializeJson(resp, buffer);
+      Serial.println(buffer);
 
-            serializeJson(resp, buffer);
-            Serial.println(buffer);
+      Serial.println(client.publish(outTopic, buffer));
+    } 
+    
+    if (method == "setState") {
+      int state = incoming_message["params"];
 
-            Serial.println(client.publish(outTopic, buffer));
-        break;
-
-        case "switchOn": 
-            digitalWrite(PIR_PORT, HIGH);
-        break;
-
-        case "switchOff":
-            digitalWrite(PIR_PORT, LOW);
-        break;
-    }
-
+      if (state == 1) {
+        digitalWrite(PIR_PORT, HIGH);
+      } else {
+        digitalWrite(PIR_PORT, LOW);
+      }
+    }  
 
   }
 }
