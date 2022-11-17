@@ -136,7 +136,7 @@ void setup() {
 
   // Sensors and actuators
   pinMode(FAN_PORT, OUTPUT);
-  pinMode(VAPE_PORT, OUTPUT)
+  pinMode(VAPE_PORT, OUTPUT);
 
 };
 
