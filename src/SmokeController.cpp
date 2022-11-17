@@ -5,7 +5,8 @@
 #include "config.h"
 
 #define MSG_BUFFER_SIZE (50)
-#define PIR_PORT 5 // Smoke actuator
+#define FAN_PORT 5 // Smoke actuator
+#define VAPE_PORT 4 // Smoke actuator
 WiFiClient espClient;
 PubSubClient client(espClient);
 
@@ -72,7 +73,7 @@ void callback(char* topic, byte* payload, unsigned int length){
 
       // Get network scan information
       DynamicJsonDocument resp(1024);
-      resp["smoke"] = digitalRead(PIR_PORT);
+      resp["smoke"] = digitalRead(VAPE_PORT);
 
       serializeJson(resp, buffer);
       Serial.println(buffer);
@@ -84,9 +85,11 @@ void callback(char* topic, byte* payload, unsigned int length){
       int state = incoming_message["params"];
 
       if (state == 1) {
-        digitalWrite(PIR_PORT, HIGH);
+        digitalWrite(FAN_PORT, HIGH);
+        digitalWrite(VAPE_PORT, HIGH);
       } else {
-        digitalWrite(PIR_PORT, LOW);
+        digitalWrite(FAN_PORT, LOW);
+        digitalWrite(VAPE_PORT, LOW);
       }
     }  
 
@@ -132,7 +135,8 @@ void setup() {
 
 
   // Sensors and actuators
-  pinMode(PIR_PORT, OUTPUT);
+  pinMode(FAN_PORT, OUTPUT);
+  pinMode(VAPE_PORT, OUTPUT)
 
 };
 
