@@ -71,7 +71,7 @@ void callback(char* topic, byte* payload, unsigned int length){
         Serial.println("Cutting engine...");
         digitalWrite(PIR_PORT_Sol,0);  // Add data to JSON
     }
-    if (method == "rpcCommand") { 
+    if (method == "openEngine") { 
         digitalWrite(PIR_PORT_Sol,1);  // Add data to JSON
     }
   }
