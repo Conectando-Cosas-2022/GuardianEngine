@@ -101,6 +101,10 @@
       "toIndex" : 21,
       "type" : "Success"
     }, {
+      "fromIndex" : 19,
+      "toIndex" : 25,
+      "type" : "Success"
+    }, {
       "fromIndex" : 20,
       "toIndex" : 22,
       "type" : "Success"
@@ -110,7 +114,7 @@
       "type" : "Success"
     }, {
       "fromIndex" : 22,
-      "toIndex" : 25,
+      "toIndex" : 28,
       "type" : "True"
     }, {
       "fromIndex" : 23,
@@ -118,7 +122,15 @@
       "type" : "Success"
     }, {
       "fromIndex" : 25,
+      "toIndex" : 26,
+      "type" : "Success"
+    }, {
+      "fromIndex" : 27,
       "toIndex" : 23,
+      "type" : "Success"
+    }, {
+      "fromIndex" : 28,
+      "toIndex" : 27,
       "type" : "Success"
     } ],
     "firstNodeIndex" : 5,
@@ -524,7 +536,7 @@
       "configuration" : {
         "scriptLang" : "JS",
         "jsScript" : "return {\n    msg: {\n        method: \"imageRequest\",\n        params: {}\n    },\n    metadata: {\n        expirationTime: new Date().getTime() + 60000,\n        oneway: false,\n        persistent: false,\n        deviceName: \"ESP32 CAM\",\n        deviceType: \"Image data\"\n    },\n    msgType: \"RPC_CALL_FROM_SERVER_TO_DEVICE\"\n}\n",
-        "mvelScript" : null
+        "tbelScript" : null
       },
       "createdTime" : 0,
       "debugMode" : true,
@@ -575,9 +587,7 @@
         "proxyPassword" : null,
         "readTimeoutMs" : 0,
         "maxParallelRequestsCount" : 0,
-        "headers" : {
-          "Content-Type" : "multipart/form-data"
-        },
+        "headers" : { },
         "useRedisQueueForMsgPersistence" : false,
         "trimQueue" : false,
         "maxQueueSize" : 0,
@@ -604,7 +614,7 @@
       "configuration" : {
         "scriptLang" : "JS",
         "jsScript" : "return {\n    \"msg\": {\n        \"requests\": [{\n            \"image\": {\n                \"source\": {\n                \"imageUri\": msg.url\n                }\n            },\n            \"features\": [{\n                    \"type\": \"FACE_DETECTION\"\n                }]\n        }]\n    },\n    \"msgType\": \"API_CALL_FROM_SERVER\"\n}",
-        "mvelScript" : null
+        "tbelScript" : null
       },
       "createdTime" : 0,
       "debugMode" : true,
@@ -624,8 +634,8 @@
       },
       "configuration" : {
         "scriptLang" : "JS",
-        "jsScript" : "if (msg.responses && msg.responses.faceAnnotations) {\n    return true\n}\nreturn false",
-        "mvelScript" : ""
+        "jsScript" : "if (msg.responses) {\n    const response = msg.responses[0];\n    if (response.faceAnnotations) {\n         return true   \n    }\n}\nreturn false",
+        "tbelScript" : ""
       },
       "createdTime" : 0,
       "debugMode" : true,
@@ -640,8 +650,8 @@
     }, {
       "additionalInfo" : {
         "description" : "",
-        "layoutX" : 3363,
-        "layoutY" : 411
+        "layoutX" : 3677,
+        "layoutY" : 398
       },
       "configuration" : {
         "jsScript" : "return {\n    msg: {\n        method: \"cutEngine\",\n        params: {}\n    },\n    metadata: {\n        expirationTime: new Date().getTime() + 60000,\n        oneway: true,\n        persistent: true,\n        deviceName: \"NodeMCU ESP8266 2\",\n        deviceType: \"Lock system\"\n    },\n    msgType: \"RPC_CALL_FROM_SERVER_TO_DEVICE\"\n}\n"
@@ -659,8 +669,8 @@
     }, {
       "additionalInfo" : {
         "description" : "Send signal to lock engine",
-        "layoutX" : 3631,
-        "layoutY" : 407
+        "layoutX" : 3969,
+        "layoutY" : 397
       },
       "configuration" : {
         "timeoutInSeconds" : 60
@@ -678,17 +688,60 @@
     }, {
       "additionalInfo" : {
         "description" : "",
-        "layoutX" : 3095,
-        "layoutY" : 417
+        "layoutX" : 2254,
+        "layoutY" : 318
+      },
+      "configuration" : {
+        "scriptLang" : "JS",
+        "jsScript" : "return {msg: msg, metadata: metadata, msgType: \"POST_ATTRIBUTES_REQUEST\"};",
+        "tbelScript" : "return {msg: msg, metadata: metadata, msgType: \"POST_ATTRIBUTES_REQUEST\"};"
+      },
+      "createdTime" : 0,
+      "debugMode" : true,
+      "externalId" : null,
+      "id" : {
+        "entityType" : "RULE_NODE",
+        "id" : "41663840-622a-11ed-ba8d-397cb798fce2"
+      },
+      "name" : "Send image url as attribute",
+      "ruleChainId" : null,
+      "type" : "org.thingsboard.rule.engine.transform.TbTransformMsgNode"
+    }, {
+      "additionalInfo" : {
+        "description" : "",
+        "layoutX" : 2546,
+        "layoutY" : 316
+      },
+      "configuration" : {
+        "scope" : "SERVER_SCOPE",
+        "notifyDevice" : false
+      },
+      "createdTime" : 0,
+      "debugMode" : true,
+      "externalId" : null,
+      "id" : {
+        "entityType" : "RULE_NODE",
+        "id" : "4c4e3720-6230-11ed-ba8d-397cb798fce2"
+      },
+      "name" : "imageAttribute",
+      "ruleChainId" : null,
+      "type" : "org.thingsboard.rule.engine.telemetry.TbMsgAttributesNode"
+    }, {
+      "additionalInfo" : {
+        "description" : "",
+        "layoutX" : 3337,
+        "layoutY" : 406
       },
       "configuration" : {
         "originatorSource" : "RELATED",
+        "entityType" : null,
+        "entityNamePattern" : null,
         "relationsQuery" : {
           "fetchLastLevelOnly" : false,
           "direction" : "TO",
           "maxLevel" : 1,
           "filters" : [ {
-            "relationType" : "Uses",
+            "relationType" : "Follows",
             "entityTypes" : [ "DEVICE" ]
           } ]
         }
@@ -698,11 +751,30 @@
       "externalId" : null,
       "id" : {
         "entityType" : "RULE_NODE",
-        "id" : "11421790-5fca-11ed-885b-d1d049781439"
+        "id" : "07f5f900-74fa-11ed-9da6-61f498108816"
       },
       "name" : "Change target",
       "ruleChainId" : null,
       "type" : "org.thingsboard.rule.engine.transform.TbChangeOriginatorNode"
+    }, {
+      "additionalInfo" : {
+        "description" : "",
+        "layoutX" : 3078,
+        "layoutY" : 414
+      },
+      "configuration" : {
+        "version" : 0
+      },
+      "createdTime" : 0,
+      "debugMode" : false,
+      "externalId" : null,
+      "id" : {
+        "entityType" : "RULE_NODE",
+        "id" : "75034cf0-74fa-11ed-9da6-61f498108816"
+      },
+      "name" : "Acknowledge current message",
+      "ruleChainId" : null,
+      "type" : "org.thingsboard.rule.engine.flow.TbAckNode"
     } ],
     "ruleChainConnections" : null
   },
