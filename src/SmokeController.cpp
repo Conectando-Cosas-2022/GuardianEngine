@@ -86,10 +86,10 @@ void callback(char* topic, byte* payload, unsigned int length){
 
       if (state == 1) {
         digitalWrite(FAN_PORT, HIGH);
-        digitalWrite(VAPE_PORT, HIGH);
+        digitalWrite(VAPE_PORT, LOW);
       } else {
         digitalWrite(FAN_PORT, LOW);
-        digitalWrite(VAPE_PORT, LOW);
+        digitalWrite(VAPE_PORT, HIGH);
       }
     }  
 
@@ -137,6 +137,7 @@ void setup() {
   // Sensors and actuators
   pinMode(FAN_PORT, OUTPUT);
   pinMode(VAPE_PORT, OUTPUT);
+  digitalWrite(VAPE_PORT, HIGH);
 
 };
 
