@@ -1,0 +1,808 @@
+{
+  "entityType" : "DASHBOARD",
+  "entity" : {
+    "assignedCustomers" : [ {
+      "customerId" : {
+        "entityType" : "CUSTOMER",
+        "id" : "36835910-3eaf-11ed-a339-0708081d40ce"
+      },
+      "title" : "Car owner A",
+      "public" : false
+    } ],
+    "configuration" : {
+      "description" : "Car dashboard",
+      "widgets" : {
+        "4d16a7c5-ffde-f048-e958-0112977fe2e8" : {
+          "isSystemType" : true,
+          "bundleAlias" : "control_widgets",
+          "typeAlias" : "led_indicator",
+          "type" : "rpc",
+          "title" : "New widget",
+          "image" : null,
+          "description" : null,
+          "sizeX" : 2.5,
+          "sizeY" : 2.5,
+          "config" : {
+            "targetDeviceAliases" : [ ],
+            "showTitle" : true,
+            "backgroundColor" : "#e6e7e8",
+            "color" : "rgba(0, 0, 0, 0.87)",
+            "padding" : "0px",
+            "settings" : {
+              "ledColor" : "#ff071c",
+              "initialValue" : true,
+              "performCheckStatus" : false,
+              "retrieveValueMethod" : "timeseries",
+              "valueAttribute" : "movement",
+              "parseValueFunction" : "return data ? true : false;"
+            },
+            "title" : "Movement Detection",
+            "dropShadow" : true,
+            "enableFullscreen" : false,
+            "widgetStyle" : { },
+            "titleStyle" : {
+              "fontSize" : "20px",
+              "fontWeight" : 500
+            },
+            "useDashboardTimewindow" : true,
+            "showLegend" : false,
+            "actions" : { },
+            "decimals" : 2,
+            "datasources" : [ ],
+            "targetDeviceAliasIds" : [ "b5392112-2266-c876-adac-6159cad91c04" ],
+            "widgetCss" : ".led {\n    size: 20px;\n}",
+            "pageSize" : 1024,
+            "noDataDisplayMessage" : "",
+            "showTitleIcon" : true,
+            "titleTooltip" : "",
+            "margin" : "5px",
+            "titleIcon" : "run_circle",
+            "iconColor" : "rgba(0, 0, 0, 0.87)",
+            "iconSize" : "24px"
+          },
+          "row" : 0,
+          "col" : 0,
+          "id" : "4d16a7c5-ffde-f048-e958-0112977fe2e8"
+        },
+        "e18b70a5-0dfc-992d-b8f4-197a75b50665" : {
+          "isSystemType" : true,
+          "bundleAlias" : "maps_v2",
+          "typeAlias" : "google_maps",
+          "type" : "latest",
+          "title" : "New widget",
+          "image" : null,
+          "description" : null,
+          "sizeX" : 8.5,
+          "sizeY" : 6,
+          "config" : {
+            "datasources" : [ {
+              "type" : "entity",
+              "name" : null,
+              "entityAliasId" : "b5392112-2266-c876-adac-6159cad91c04",
+              "filterId" : null,
+              "dataKeys" : [ {
+                "name" : "latitude",
+                "type" : "attribute",
+                "label" : "latitude",
+                "color" : "#2196f3",
+                "settings" : { },
+                "_hash" : 0.36460977160747654
+              }, {
+                "name" : "longitude",
+                "type" : "attribute",
+                "label" : "longitude",
+                "color" : "#4caf50",
+                "settings" : { },
+                "_hash" : 0.9404881216213292
+              } ]
+            } ],
+            "timewindow" : {
+              "displayValue" : "",
+              "selectedTab" : 0,
+              "realtime" : {
+                "realtimeType" : 1,
+                "interval" : 1000,
+                "timewindowMs" : 60000,
+                "quickInterval" : "CURRENT_DAY"
+              },
+              "history" : {
+                "historyType" : 0,
+                "interval" : 1000,
+                "timewindowMs" : 60000,
+                "fixedTimewindow" : {
+                  "startTimeMs" : 1670198272239,
+                  "endTimeMs" : 1670284672239
+                },
+                "quickInterval" : "CURRENT_DAY"
+              },
+              "aggregation" : {
+                "type" : "AVG",
+                "limit" : 2500
+              }
+            },
+            "showTitle" : true,
+            "backgroundColor" : "#fff",
+            "color" : "rgba(0, 0, 0, 0.87)",
+            "padding" : "8px",
+            "settings" : {
+              "provider" : "google-map",
+              "gmApiKey" : "AIzaSyDoEx2kaGz3PxwbI9T7ccTSg5xjdw8Nw8Q",
+              "gmDefaultMapType" : "roadmap",
+              "mapProvider" : "OpenStreetMap.Mapnik",
+              "useCustomProvider" : false,
+              "customProviderTileUrl" : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+              "mapProviderHere" : "HERE.normalDay",
+              "credentials" : {
+                "app_id" : "AhM6TzD9ThyK78CT3ptx",
+                "app_code" : "p6NPiITB3Vv0GMUFnkLOOg"
+              },
+              "mapImageUrl" : "data:image/svg+xml;base64,PHN2ZyBpZD0ic3ZnMiIgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMTAwIiB3aWR0aD0iMTAwIiB2ZXJzaW9uPSIxLjEiIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgdmlld0JveD0iMCAwIDEwMCAxMDAiPgogPGcgaWQ9ImxheWVyMSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCAtOTUyLjM2KSI+CiAgPHJlY3QgaWQ9InJlY3Q0Njg0IiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBoZWlnaHQ9Ijk5LjAxIiB3aWR0aD0iOTkuMDEiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiB5PSI5NTIuODYiIHg9Ii40OTUwNSIgc3Ryb2tlLXdpZHRoPSIuOTkwMTAiIGZpbGw9IiNlZWUiLz4KICA8dGV4dCBpZD0idGV4dDQ2ODYiIHN0eWxlPSJ3b3JkLXNwYWNpbmc6MHB4O2xldHRlci1zcGFjaW5nOjBweDt0ZXh0LWFuY2hvcjptaWRkbGU7dGV4dC1hbGlnbjpjZW50ZXIiIGZvbnQtd2VpZ2h0PSJib2xkIiB4bWw6c3BhY2U9InByZXNlcnZlIiBmb250LXNpemU9IjEwcHgiIGxpbmUtaGVpZ2h0PSIxMjUlIiB5PSI5NzAuNzI4MDkiIHg9IjQ5LjM5NjQ3NyIgZm9udC1mYW1pbHk9IlJvYm90byIgZmlsbD0iIzY2NjY2NiI+PHRzcGFuIGlkPSJ0c3BhbjQ2OTAiIHg9IjUwLjY0NjQ3NyIgeT0iOTcwLjcyODA5Ij5JbWFnZSBiYWNrZ3JvdW5kIDwvdHNwYW4+PHRzcGFuIGlkPSJ0c3BhbjQ2OTIiIHg9IjQ5LjM5NjQ3NyIgeT0iOTgzLjIyODA5Ij5pcyBub3QgY29uZmlndXJlZDwvdHNwYW4+PC90ZXh0PgogIDxyZWN0IGlkPSJyZWN0NDY5NCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgaGVpZ2h0PSIxOS4zNiIgd2lkdGg9IjY5LjM2IiBzdHJva2U9IiMwMDAiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgeT0iOTkyLjY4IiB4PSIxNS4zMiIgc3Ryb2tlLXdpZHRoPSIuNjM5ODYiIGZpbGw9Im5vbmUiLz4KIDwvZz4KPC9zdmc+Cg==",
+              "tmApiKey" : "84d6d83e0e51e481e50454ccbe8986b",
+              "tmDefaultMapType" : "roadmap",
+              "latKeyName" : "latitude",
+              "lngKeyName" : "longitude",
+              "xPosKeyName" : "xPos",
+              "yPosKeyName" : "yPos",
+              "defaultCenterPosition" : "0,0",
+              "disableScrollZooming" : false,
+              "disableDoubleClickZooming" : false,
+              "disableZoomControl" : false,
+              "fitMapBounds" : true,
+              "useDefaultCenterPosition" : false,
+              "mapPageSize" : 16384,
+              "markerOffsetX" : 0.5,
+              "markerOffsetY" : 1,
+              "draggableMarker" : false,
+              "showLabel" : true,
+              "useLabelFunction" : false,
+              "label" : "${entityName}",
+              "showTooltip" : true,
+              "showTooltipAction" : "click",
+              "autocloseTooltip" : true,
+              "useTooltipFunction" : false,
+              "tooltipPattern" : "<b>${entityName}</b><br/><br/><b>Latitude:</b> ${latitude:7}<br/><b>Longitude:</b> ${longitude:7}<br/><small>See advanced settings for details</small>",
+              "tooltipOffsetX" : 0,
+              "tooltipOffsetY" : -1,
+              "color" : "#fe7568",
+              "useColorFunction" : true,
+              "colorFunction" : "var type = dsData[dsIndex]['Type'];\nif (type == 'colorpin') {\n\tvar temperature = dsData[dsIndex]['temperature'];\n\tif (typeof temperature !== undefined) {\n\t    var percent = (temperature + 60)/120 * 100;\n\t    return tinycolor.mix('blue', 'red', percent).toHexString();\n\t}\n\treturn 'blue';\n}\n",
+              "useMarkerImageFunction" : true,
+              "markerImageFunction" : "var type = dsData[dsIndex]['Type'];\nif (type == 'thermometer') {\n\tvar res = {\n\t    url: images[0],\n\t    size: 40\n\t}\n\tvar temperature = dsData[dsIndex]['temperature'];\n\tif (typeof temperature !== undefined) {\n\t    var percent = (temperature + 60)/120;\n\t    var index = Math.min(3, Math.floor(4 * percent));\n\t    res.url = images[index];\n\t}\n\treturn res;\n}",
+              "markerImages" : [ "data:image/png;base64,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", "data:image/png;base64,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", "data:image/png;base64,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", "data:image/png;base64,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" ],
+              "showPolygon" : false,
+              "polygonKeyName" : "perimeter",
+              "editablePolygon" : false,
+              "showPolygonLabel" : false,
+              "usePolygonLabelFunction" : false,
+              "polygonLabel" : "${entityName}",
+              "showPolygonTooltip" : false,
+              "showPolygonTooltipAction" : "click",
+              "autoClosePolygonTooltip" : true,
+              "usePolygonTooltipFunction" : false,
+              "polygonTooltipPattern" : "<b>${entityName}</b><br/><br/><b>TimeStamp:</b> ${ts:7}",
+              "polygonColor" : "#3388ff",
+              "polygonOpacity" : 0.2,
+              "usePolygonColorFunction" : false,
+              "polygonStrokeColor" : "#3388ff",
+              "polygonStrokeOpacity" : 1,
+              "polygonStrokeWeight" : 3,
+              "usePolygonStrokeColorFunction" : false,
+              "showCircle" : false,
+              "circleKeyName" : "perimeter",
+              "editableCircle" : false,
+              "showCircleLabel" : false,
+              "useCircleLabelFunction" : false,
+              "circleLabel" : "${entityName}",
+              "showCircleTooltip" : false,
+              "showCircleTooltipAction" : "click",
+              "autoCloseCircleTooltip" : true,
+              "useCircleTooltipFunction" : false,
+              "circleTooltipPattern" : "<b>${entityName}</b><br/><br/><b>TimeStamp:</b> ${ts:7}",
+              "circleFillColor" : "#3388ff",
+              "circleFillColorOpacity" : 0.2,
+              "useCircleFillColorFunction" : false,
+              "circleStrokeColor" : "#3388ff",
+              "circleStrokeOpacity" : 1,
+              "circleStrokeWeight" : 3,
+              "useCircleStrokeColorFunction" : false,
+              "useClusterMarkers" : false,
+              "zoomOnClick" : true,
+              "maxClusterRadius" : 80,
+              "animate" : true,
+              "spiderfyOnMaxZoom" : false,
+              "showCoverageOnHover" : true,
+              "chunkedLoading" : false,
+              "removeOutsideVisibleBounds" : true
+            },
+            "title" : "Current car location",
+            "dropShadow" : true,
+            "enableFullscreen" : true,
+            "titleStyle" : {
+              "fontSize" : "16px",
+              "fontWeight" : 400
+            },
+            "useDashboardTimewindow" : true,
+            "showLegend" : false,
+            "widgetStyle" : { },
+            "actions" : { },
+            "showTitleIcon" : true,
+            "titleIcon" : "map",
+            "iconColor" : "rgba(0, 0, 0, 0.87)",
+            "iconSize" : "24px",
+            "titleTooltip" : "",
+            "widgetCss" : "",
+            "pageSize" : 1024,
+            "noDataDisplayMessage" : ""
+          },
+          "row" : 0,
+          "col" : 0,
+          "id" : "e18b70a5-0dfc-992d-b8f4-197a75b50665"
+        },
+        "9e6ca65e-9005-aa70-051b-b9e3020eb6c2" : {
+          "isSystemType" : true,
+          "bundleAlias" : "control_widgets",
+          "typeAlias" : "rpcbutton",
+          "type" : "rpc",
+          "title" : "New widget",
+          "image" : null,
+          "description" : null,
+          "sizeX" : 4,
+          "sizeY" : 2,
+          "config" : {
+            "targetDeviceAliases" : [ ],
+            "showTitle" : true,
+            "backgroundColor" : "#e6e7e8",
+            "color" : "rgba(0, 0, 0, 0.87)",
+            "padding" : "0px",
+            "settings" : {
+              "buttonText" : "Open",
+              "oneWayElseTwoWay" : true,
+              "methodName" : "openEngine",
+              "methodParams" : "{\n    \"msg\": {\n        \"method\": \"openEngine\",\n        \"params\": {}\n    },\n    \"metadata\": {\n        \"oneway\": true,\n        \"persistent\": true,\n        \"deviceName\": \"NodeMCU ESP8266 2\"\n    },\n    \"msgType\": \"RPC_CALL_FROM_SERVER_TO_DEVICE\"\n}",
+              "requestTimeout" : 5000,
+              "showError" : false,
+              "requestPersistent" : false,
+              "styleButton" : {
+                "isRaised" : true,
+                "isPrimary" : false
+              }
+            },
+            "title" : "Reopen gas pipe",
+            "dropShadow" : true,
+            "enableFullscreen" : false,
+            "widgetStyle" : { },
+            "titleStyle" : {
+              "fontSize" : "16px",
+              "fontWeight" : 400
+            },
+            "useDashboardTimewindow" : true,
+            "showLegend" : false,
+            "actions" : { },
+            "datasources" : [ ],
+            "targetDeviceAliasIds" : [ "f5e98dab-2b31-6159-afdf-fb921fc06b4f" ],
+            "showTitleIcon" : true,
+            "titleTooltip" : "",
+            "widgetCss" : "",
+            "pageSize" : 1024,
+            "noDataDisplayMessage" : "",
+            "titleIcon" : "water_drop",
+            "iconColor" : "rgba(0,135,255,0.87)",
+            "iconSize" : "24px"
+          },
+          "row" : 0,
+          "col" : 0,
+          "id" : "9e6ca65e-9005-aa70-051b-b9e3020eb6c2"
+        },
+        "2263fcfc-5bd2-074a-738b-90da3e6271b6" : {
+          "isSystemType" : true,
+          "bundleAlias" : "control_widgets",
+          "typeAlias" : "switch_control",
+          "type" : "rpc",
+          "title" : "New widget",
+          "image" : null,
+          "description" : null,
+          "sizeX" : 4,
+          "sizeY" : 2.5,
+          "config" : {
+            "targetDeviceAliases" : [ ],
+            "showTitle" : false,
+            "backgroundColor" : "#e6e7e8",
+            "color" : "rgba(0, 0, 0, 0.87)",
+            "padding" : "0px",
+            "settings" : {
+              "title" : "Switch control",
+              "showOnOffLabels" : true,
+              "initialValue" : false,
+              "retrieveValueMethod" : "rpc",
+              "getValueMethod" : "getCurrentState",
+              "parseValueFunction" : "return data ? true : false;",
+              "setValueMethod" : "setState",
+              "convertValueFunction" : "return value;",
+              "requestTimeout" : 500,
+              "requestPersistent" : false
+            },
+            "title" : "New Switch Control",
+            "dropShadow" : true,
+            "enableFullscreen" : false,
+            "widgetStyle" : { },
+            "titleStyle" : {
+              "fontSize" : "16px",
+              "fontWeight" : 400
+            },
+            "useDashboardTimewindow" : true,
+            "showLegend" : false,
+            "actions" : { },
+            "decimals" : 2,
+            "datasources" : [ ],
+            "targetDeviceAliasIds" : [ "da9cbd66-8a20-e455-95de-384785d8b154" ]
+          },
+          "row" : 0,
+          "col" : 0,
+          "id" : "2263fcfc-5bd2-074a-738b-90da3e6271b6"
+        },
+        "fb50b767-9f76-4f98-4749-efdbd537b111" : {
+          "isSystemType" : true,
+          "bundleAlias" : "cards",
+          "typeAlias" : "html_value_card",
+          "type" : "latest",
+          "title" : "New widget",
+          "sizeX" : 10,
+          "sizeY" : 5,
+          "config" : {
+            "datasources" : [ {
+              "type" : "entity",
+              "name" : null,
+              "entityAliasId" : "a7d8204d-9787-8373-217d-d85959ca150a",
+              "filterId" : null,
+              "dataKeys" : [ {
+                "name" : "url",
+                "type" : "attribute",
+                "label" : "url",
+                "color" : "#4caf50",
+                "settings" : { },
+                "_hash" : 0.8098613158628476
+              } ]
+            } ],
+            "timewindow" : {
+              "displayValue" : "",
+              "selectedTab" : 0,
+              "realtime" : {
+                "realtimeType" : 1,
+                "interval" : 1000,
+                "timewindowMs" : 60000,
+                "quickInterval" : "CURRENT_DAY"
+              },
+              "history" : {
+                "historyType" : 0,
+                "interval" : 1000,
+                "timewindowMs" : 60000,
+                "fixedTimewindow" : {
+                  "startTimeMs" : 1670198272239,
+                  "endTimeMs" : 1670284672239
+                },
+                "quickInterval" : "CURRENT_DAY"
+              },
+              "aggregation" : {
+                "type" : "AVG",
+                "limit" : 2500
+              }
+            },
+            "showTitle" : false,
+            "backgroundColor" : "#fff",
+            "color" : "rgb(255, 255, 255)",
+            "padding" : "0px",
+            "settings" : {
+              "cardHtml" : "<div class='card'>\n    <div class='content'>\n       <div class='lower-bar'>\n           <div class='icon-container'>\n               <div class='material-icons icon'>photo</div>\n           </div>\n           <div class='description'>Image attribute</div>\n       </div>\n       <div class='upper-bar'>\n            <div class='image-shade'>\n                <img src=\"${#0}\"> \n            </div>\n       </div>\n    </div>\n</div>",
+              "cardCss" : ".card,\n.card * {\n    box-sizing: border-box;\n}\n\n.card {\n    position: relative;\n    width: 100%;\n    height: 100%;\n}\n\n.card .content {\n    height: 100%;\n}\n\n.card .upper-bar {\n    position: relative;\n    z-index: 0;\n    overflow: hidden;\n    height: 80%;\n    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .26);\n    color: rgba(0,0,0,0.85);\n}\n\n.card .lower-bar {\n    height: 20%;\n    padding-left: 16px;\n    display: flex;\n    flex-direction: row;\n    align-items: center;\n    background-color: #00695c;\n}\n\n.card .image-shade {\n    width: 100%;\n    height: 100%;\n    display: flex;\n    flex-direction: column;\n    justify-content: center;\n    z-index: 0;\n}\n\n.card .image-shade img {\n    width: 100%;\n    height: 100%;\n    object-fit: contain;\n}\n\n.card .icon-container {\n    height: 40px;\n    width: 40px;\n    border-radius: 50%;\n    border: 3px solid rgba(255,255,255,1);\n    text-align: center;\n}\n\n.card .description {\n    margin-left: 16px;\n    font-size: 18px;\n    font-weight: 500;\n    color: rgba(255,255,255,1);\n}\n\n.card .icon {\n    line-height: 36px;\n    color: rgba(255,255,255,1);\n}"
+            },
+            "title" : "Image attribute example",
+            "dropShadow" : false,
+            "enableFullscreen" : false,
+            "widgetStyle" : { },
+            "titleStyle" : {
+              "fontSize" : "16px",
+              "fontWeight" : 400
+            },
+            "useDashboardTimewindow" : true,
+            "showLegend" : false,
+            "actions" : {
+              "headerButton" : [ {
+                "name" : "{i18n:water-meter-dashboard.widgets.meter-installation-photo}",
+                "icon" : "photo_library",
+                "type" : "customPretty",
+                "customHtml" : "<form #editEntityForm=\"ngForm\" [formGroup]=\"editEntityFormGroup\"\n      (ngSubmit)=\"save()\" class=\"edit-photo-form\">\n    <mat-toolbar fxLayout=\"row\" color=\"primary\">\n        <h2>{{getCustomTranslation('{i18n:water-meter-dashboard.widgets.meter-installation-photo}','Photo of the meter installation')}}</h2>\n        <span fxFlex></span>\n        <button mat-icon-button (click)=\"cancel()\" type=\"button\">\n            <mat-icon class=\"material-icons\">close</mat-icon>\n        </button>\n    </mat-toolbar>\n    <mat-progress-bar color=\"warn\" mode=\"indeterminate\" *ngIf=\"isLoading$ | async\"></mat-progress-bar>\n    <div style=\"height: 4px;\" *ngIf=\"!(isLoading$ | async)\"></div>\n    <div mat-dialog-content fxLayout=\"column\">\n        <fieldset [disabled]=\"(isLoading$ | async) || loading || !hasPermissionToEdit\">\n            <!--<xt-image-gallery images-list=\"imagesData.imagesList\" main-image-index=\"imagesData.mainImageIndex\" is-edit-mode=\"isEditMode\" the-form=\"editDeviceForm\"  loading=\"loading\"></xt-image-gallery>-->\n            <div *ngIf=\"!isEditMode\" class=\"xt-image-gallery\" fxLayout=\"column\">\n                <div fxLayout=\"row\" style=\"border-bottom: #9c9c9c 1px solid; min-height: 40px;\">\n                    <button *ngIf=\"hasPermissionToEdit\" mat-button mat-icon-button (click)=\"addNewImages()\"\n                            matTooltip=\"{{ 'action.add' | translate }}\"\n                            matTooltipPosition=\"above\" type=\"button\"\n                            aria-label=\"{{ 'action.add' | translate }}\">\n                        <mat-icon>add_to_photos</mat-icon>\n                    </button>\n                    <span fxFlex></span>\n                    <button mat-button mat-icon-button class=\"view-mode\" [ngClass]=\"{'active': multiplePhotosView}\" (click)=\"switchLayout(true)\"\n                            matTooltip=\"{{getCustomTranslation('{i18n:water-meter-dashboard.image-gallery.multiple}', 'Multiple')}}\"\n                            matTooltipPosition=\"above\" type=\"button\"\n                            aria-label=\"{{getCustomTranslation('{i18n:water-meter-dashboard.image-gallery.multiple}', 'Multiple')}}\">\n                        <mat-icon>view_comfy</mat-icon>\n                    </button>\n                    <button mat-button mat-icon-button class=\"view-mode\" [ngClass]=\"{'active': !multiplePhotosView}\" (click)=\"switchLayout(false)\"\n                            matTooltip=\"{{getCustomTranslation('{i18n:water-meter-dashboard.image-gallery.single}', 'Single')}}\"\n                            matTooltipPosition=\"above\" type=\"button\"\n                            aria-label=\"{{getCustomTranslation('{i18n:water-meter-dashboard.image-gallery.single}', 'Single')}}\">\n                        <mat-icon>image</mat-icon>\n                    </button>\n                </div>\n                <div class=\"images-wrapper\"  *ngIf=\"imagesData && imagesData.imagesList && imagesData.imagesList.length && !loading\">\n                    <div class=\"images-list\" *ngIf=\"multiplePhotosView\"\n                         fxLayout=\"row wrap\" fxLayout.xs=\"column\"\n                         fxLayoutAlign=\"space-evenly center\">\n                        <div class=\"images-list__item\"\n                             *ngFor=\"let image of imagesData.imagesList; index as i; trackBy: trackByIndex\">\n                            <img class=\"images-list__img\" [src]=\"image.url\">\n                            <div class=\"images-list__action-buttons\" fxLayout=\"row\">\n                                <div *ngIf=\"imagesData.imagesList.length > 1\" fxLayout=\"row\">\n                                    <button *ngIf=\"imagesData.mainImageIndex !== i\" mat-button mat-icon-button\n                                            class=\"images-list__action-button\"\n                                            (click)=\"selectAsMain(i)\"\n                                            matTooltip=\"{{getCustomTranslation('{i18n:water-meter-dashboard.image-gallery.select-as-main}', 'Select as main')}}\"\n                                            matTooltipPosition=\"above\" type=\"button\"\n                                            aria-label=\"{{getCustomTranslation('{i18n:water-meter-dashboard.image-gallery.select-as-main}', 'Select as main')}}\">\n                                        <mat-icon>star_border</mat-icon>\n                                    </button>\n                                    <button *ngIf=\"imagesData.mainImageIndex === i\" mat-button mat-icon-button\n                                            class=\"images-list__action-button\"\n                                            (click)=\"deselectAsMain()\"\n                                            matTooltip=\"{{getCustomTranslation('{i18n:water-meter-dashboard.image-gallery.deselect-as-main}', 'Deselect as main')}}\"\n                                            matTooltipPosition=\"above\" type=\"button\"\n                                            aria-label=\"{{getCustomTranslation('{i18n:water-meter-dashboard.image-gallery.deselect-as-main}', 'Deselect as main')}}\">\n                                        <mat-icon>star</mat-icon>\n                                    </button>\n                                </div>\n                                <button mat-button mat-icon-button class=\"images-list__action-button\"\n                                        (click)=\"deleteImage(i)\"\n                                        matTooltip=\"{{ 'action.delete' | translate }}\"\n                                        matTooltipPosition=\"above\" type=\"button\"\n                                        aria-label=\"{{ 'action.delete' | translate }}\">\n                                    <mat-icon>close</mat-icon>\n                                </button>\n                            </div>\n                        </div>\n                    </div>\n                    <div class=\"images-carousel\" *ngIf=\"!multiplePhotosView\">\n                        <ngx-hm-carousel *ngIf=\"imagesData.imagesList.length > 0\"\n                                         #carousel\n                                         [(ngModel)]=\"imageCarousel.index\"\n                                         [ngModelOptions]=\"{standalone: true}\"\n                                         [data]=\"imagesData.imagesList\"\n                                         [infinite]=\"false\"\n                                         class=\"carousel c-accent\">\n                            <section ngx-hm-carousel-container class=\"content\">\n                                <div class=\"images-carousel__item item\" ngx-hm-carousel-item\n                                     *ngFor=\"let image of imagesData.imagesList; index as i; trackBy: trackByIndex\">\n                                        <img class=\"images-carousel__img\" [src]=\"image.url\">\n                                </div>\n                            </section>\n\n                            <ng-template #carouselPrev>\n                                <button mat-icon-button\n                                        *ngIf=\"imageCarousel.index > 0\"\n                                        matTooltip=\"{{getCustomTranslation('{i18n:water-meter-dashboard.image-gallery.previous-image}', 'Previous')}}\"\n                                        matTooltipPosition=\"above\"\n                                        type=\"button\">\n                                    <mat-icon>keyboard_arrow_left</mat-icon>\n                                </button>\n                            </ng-template>\n                            <ng-template #carouselNext>\n                                <button mat-icon-button\n                                        *ngIf=\"imageCarousel.index < imagesData.imagesList.length - 1\"\n                                        matTooltip=\"{{getCustomTranslation('{i18n:water-meter-dashboard.image-gallery.next-image}', 'Next')}}\"\n                                        matTooltipPosition=\"above\"\n                                        type=\"button\">\n                                    <mat-icon>keyboard_arrow_right</mat-icon>\n                                </button>\n                            </ng-template>\n\n                            <ng-template #carouselDot let-model>\n                                <div class=\"ball\"\n                                     [class.visible]=\"model.index === model.currentIndex\"></div>\n                            </ng-template>\n                        </ngx-hm-carousel>\n                        <div class=\"images-carousel__action-buttons\" fxLayout=\"row\">\n                            <div *ngIf=\"imagesData.imagesList.length > 1\" fxLayout=\"row\">\n                                <button *ngIf=\"imagesData.mainImageIndex !== imageCarousel.index\" mat-button mat-icon-button\n                                        class=\"images-carousel__action-button\"\n                                        (click)=\"selectAsMain(imageCarousel.index)\"\n                                        matTooltip=\"{{getCustomTranslation('{i18n:water-meter-dashboard.image-gallery.select-as-main}', 'Select as main')}}\"\n                                        matTooltipPosition=\"above\" type=\"button\"\n                                        aria-label=\"{{getCustomTranslation('{i18n:water-meter-dashboard.image-gallery.select-as-main}', 'Select as main')}}\">\n                                    <mat-icon>star_border</mat-icon>\n                                </button>\n                                <button *ngIf=\"imagesData.mainImageIndex === imageCarousel.index\" mat-button mat-icon-button\n                                        class=\"images-carousel__action-button\"\n                                        (click)=\"deselectAsMain()\"\n                                        matTooltip=\"{{getCustomTranslation('{i18n:water-meter-dashboard.image-gallery.deselect-as-main}', 'Deselect as main')}}\"\n                                        matTooltipPosition=\"above\" type=\"button\"\n                                        aria-label=\"{{getCustomTranslation('{i18n:water-meter-dashboard.image-gallery.deselect-as-main}', 'Deselect as main')}}\">\n                                    <mat-icon>star</mat-icon>\n                                </button>\n                            </div>\n                            <button mat-button mat-icon-button class=\"images-carousel__action-button\"\n                                    (click)=\"deleteImage(imageCarousel.index)\"\n                                    matTooltip=\"{{ 'action.delete' | translate }}\"\n                                    matTooltipPosition=\"above\" type=\"button\"\n                                    aria-label=\"{{ 'action.delete' | translate }}\">\n                                <mat-icon>close</mat-icon>\n                            </button>\n                        </div>\n                    </div>\n                </div>\n                <div *ngIf=\"!imagesData || !imagesData.imagesList || !imagesData.imagesList.length || loading\" fxLayout=\"row\" fxLayoutAlign=\"center center\"\n                     style=\"text-transform: uppercase; min-height: 75px; padding-top: 25px;\">\n                    <span *ngIf=\"!loading\">\n                        {{getCustomTranslation('{i18n:water-meter-dashboard.image-gallery.no-images-found}', 'No images found')}}\n                    </span>\n                    <mat-progress-spinner *ngIf=\"loading\" mode=\"indeterminate\" color=\"accent\" diameter=\"40\"></mat-progress-spinner>\n                </div>\n            </div>\n            <div class=\"xt-image-gallery-edit-mode\" *ngIf=\"isEditMode\" fxLayout=\"column\">\n                <tb-image-input fxFlex\n                                formControlName=\"meterPhoto\"\n                                [showPreview]=\"true\"\n                                [showClearButton]=\"true\">\n                </tb-image-input>\n                <div fxLayout=\"row\">\n                    <button mat-button mat-raised-button color=\"primary\"\n                            type=\"button\"\n                            [disabled]=\"(isLoading$ | async) || loading || editEntityForm.invalid || !editEntityForm.dirty\"\n                            (click)=\"applyChanges()\">\n                        {{ 'action.apply' | translate }}\n                    </button>\n                    <button mat-button color=\"primary\"\n                            type=\"button\"\n                            [disabled]=\"(isLoading$ | async)\"\n                            (click)=\"discardChanges()\" cdkFocusInitial>\n                        {{ 'action.cancel' | translate }}\n                    </button>\n                </div>\n            </div>\n        </fieldset>\n    </div>\n    <div *ngIf=\"hasPermissionToEdit && !isEditMode\" mat-dialog-actions fxLayout=\"row\" fxLayoutAlign=\"end center\">\n        <button mat-button mat-raised-button color=\"primary\"\n                type=\"submit\"\n                [disabled]=\"(isLoading$ | async) || loading || editEntityForm.invalid || !editEntityForm.dirty\">\n            {{ 'action.save' | translate }}\n        </button>\n        <button mat-button color=\"primary\"\n                type=\"button\"\n                [disabled]=\"(isLoading$ | async)\"\n                (click)=\"cancel()\" cdkFocusInitial>\n            {{ 'action.cancel' | translate }}\n        </button>\n    </div>\n</form>",
+                "customCss" : ".edit-photo-form fieldset {\n    min-width: 550px;\n    max-width: 550px;\n}\n\n.edit-photo-form fieldset {\n    overflow: hidden;\n}\n\n.xt-image-gallery {\n    width: 100%;\n    min-width: 275px;\n    height: 100%;\n    max-height: 50vh;\n    overflow-y: hidden;\n}\n\n.view-mode.active {\n    color: #aaa;\n}\n\n.images-wrapper {\n    height: 100%;\n    overflow-y: auto;\n}\n\n.images-list {\n    overflow-y: auto;\n    padding: 15px 0;\n}\n\n.images-list__item {\n    position: relative;\n    width: 150px;\n    height: 150px;\n    margin-bottom: 10px;\n    margin-right: 10px;\n}\n\n.images-list__img {\n    object-fit: cover;\n    width: 100%;\n    height: 100%;\n}\n\n.images-list__action-buttons {\n    position: absolute;\n    top: 0;\n    right: 0;\n}\n\n.images-list__action-buttons {\n    background-color: rgba(0, 0, 0, .3);\n    color: #fff;\n}\n\n.images-list__action-button {\n    width: 25px;\n    min-width: 25px;\n    height: 25px;\n    min-height: 25px;\n    line-height: unset;\n    color: #fff;\n}\n\n.images-carousel {\n    padding: 30px 15px 0;\n    position: relative;\n    height: 40vh;\n}\n\n.images-carousel__item {\n    position: relative;\n    width: 100%;\n    height: 100%;\n}\n\n.images-carousel__img {\n    object-fit: contain;\n    width: 100%;\n    height: 100%;\n}\n\n.images-carousel__action-buttons {\n    position: absolute;\n    top: 0;\n    right: 15px;\n}\n\n.images-carousel__action-buttons {\n    color: #000;\n}\n\n.images-carousel__action-button {\n    width: 25px;\n    min-width: 25px;\n    height: 25px;\n    min-height: 25px;\n    margin: 3px;\n    line-height: unset;\n    color: #000;\n}\n\n.carousel .aniT {\n    transition: all 1s linear;\n}\n\n.carousel .transition {\n    transition: all 0.3s ease-in-out !important;\n}\n\n.carousel .content {\n    display: flex;\n    height: 100%;\n}\n\n.carousel .content .item {\n    position: relative;\n}\n\n.carousel .direction {\n    width: 60px;\n}\n\n.carousel .direction>button {\n    background: rgba(255,255,255,.32)\n}\n\n.carousel .ball {\n    width: 10px;\n    height: 10px;\n    border-radius: 50%;\n    background: #fff;\n    border: 2px solid rgba(0,0,0,.32);\n    opacity: 0.5;\n}\n\n.carousel .ball.visible {\n     opacity: 1;\n }\n\n.carousel ul.indicators {\n    pointer-events: none;\n}\n\n.carousel ul.indicators li {\n    pointer-events: all;\n}\n\n@media (max-width: 599px) {\n    .xt-image-gallery {\n        max-height: calc(100vh - 250px);\n    }\n\n    .images-carousel {\n        height: 100%;\n    }\n\n    .images-list__item {\n        width: 100%;\n        max-width: 450px;\n        height: 0;\n        padding-top: 75%;\n    }\n\n    .images-list__img {\n        position: absolute;\n        top: 0;\n        left: 0;\n    }\n}\n\n@media (max-width: 959px) {\n    .images-list__item {\n        margin-bottom: 15px;\n    }\n    .edit-photo-form fieldset {\n        min-width: 100%;\n        max-width: 100%;\n    }\n}\n",
+                "customFunction" : "const $injector = widgetContext.$scope.$injector;\nconst currentUser = widgetContext.currentUser;\nconst entityGroupService = $injector.get(widgetContext.servicesMap.get('entityGroupService'));\nconst attributeService = $injector.get(widgetContext.servicesMap.get('attributeService'));\nconst customDialog = $injector.get(widgetContext.servicesMap.get('customDialog'));\nconst utils = $injector.get(widgetContext.servicesMap.get('utils'));\n\nlet userGroupsIds, userGroups;\nlet hasPermissionToEdit = false;\n\nentityGroupService.getEntityGroupIdsForEntityId('USER', currentUser.userId).subscribe(groupsIds => {\n    userGroupsIds = groupsIds;\n\n    const idsArray = [];\n\n    userGroupsIds.forEach(groupId => {\n        idsArray.push(groupId.id);\n    });\n\n    entityGroupService.getEntityGroupsByIds(idsArray).subscribe(groups => {\n        userGroups = groups;\n\n        hasPermissionToEdit = userGroups.some(group => group.name === 'Tenant Administrators' || group.name === 'Customer Administrators');\n\n        openEditEntityDialog();\n    });\n});\n\nfunction openEditEntityDialog() {\n    customDialog.customDialog(htmlTemplate, EditDeviceDialogController).subscribe();\n}\n\n\nfunction EditDeviceDialogController(instance) {\n    let vm = instance;\n\n    vm.loading = false;\n    vm.hasPermissionToEdit = hasPermissionToEdit;\n    vm.attributes = {};\n\n    // vm.imagesData = {\n    //     imagesList: [\n    //         {\n    //             url: 'https://www.bing.com/th?id=OHR.LochLeum_ROW3165708075_1920x1080.jpg&rf=LaDigue_1920x1080.jpg'\n    //         },\n    //         {\n    //             url: 'https://www.bing.com/th?id=OHR.TorngatsMt_ROW2999822673_1920x1080.jpg&rf=LaDigue_1920x1080.jpg'\n    //         },\n    //         {\n    //             url: 'https://www.bing.com/th?id=OHR.GorgeSavoie_ROW2573811139_1920x1080.jpg&rf=LaDigue_1920x1080.jpg'\n    //         },\n    //         {\n    //             url: 'https://www.bing.com/th?id=OHR.GreyLady_ROW2264526705_1920x1080.jpg&rf=LaDigue_1920x1080.jpg'\n    //         },\n    //         {\n    //             url: 'https://www.bing.com/th?id=OHR.FishOwl_ROW2140490008_1920x1080.jpg&rf=LaDigue_1920x1080.jpg'\n    //         },\n    //         {\n    //             url: 'https://www.bing.com/th?id=OHR.Mazezilla_ROW2042538071_1920x1080.jpg&rf=LaDigue_1920x1080.jpg'\n    //         },\n    //         {\n    //             url: 'https://www.bing.com/th?id=OHR.CambronBridge_ROW1504283854_1920x1080.jpg&rf=LaDigue_1920x1080.jpg'\n    //         }\n    //     ],\n    //     mainImageIndex: 0\n    // };\n\n    vm.imagesData = {\n        imagesList: [],\n        mainImageIndex: 0\n    };\n\n    const attributeKeys = ['meterPhoto'];\n\n    vm.editEntityFormGroup = vm.fb.group({\n        meterPhoto: [null]\n    });\n\n    getEntityAttributes(attributeKeys);\n\n    function getEntityAttributes(attributeKeys) {\n        vm.loading = true;\n\n        attributeService.getEntityAttributes(entityId, 'SERVER_SCOPE', attributeKeys).subscribe(data => {\n            vm.loading = false;\n\n            setEntityAttributes(data);\n            processData();\n        });\n    }\n\n    function setEntityAttributes(attributes) {\n        for (let i = 0; i < attributes.length; i++) {\n            vm.attributes[attributes[i].key] = attributes[i].value;\n        }\n    }\n\n    function processData() {\n        initImagesView();\n        if (typeof vm.attributes.meterPhoto !== 'undefined') {\n            try {\n                vm.imagesData = JSON.parse(vm.attributes.meterPhoto);\n            } catch (e) {\n                vm.imagesData.imagesList.push({url: vm.attributes.meterPhoto});\n                vm.imagesData.mainImageIndex = 0;\n            }\n        }\n    }\n\n    function initImagesView() {\n        vm.multiplePhotosView = true;\n        vm.isEditMode = vm.isEditMode || false;\n        vm.imageCarousel = {\n            index: 0\n        }\n    }\n\n    vm.cancel = function() {\n        vm.dialogRef.close(null);\n    };\n\n    vm.save = function() {\n        vm.loading = true;\n\n        vm.editEntityFormGroup.markAsPristine();\n        saveAttributes(entityId).subscribe(()=> {\n            vm.loading = false;\n            vm.dialogRef.close(null);\n        });\n    };\n\n    vm.trackByIndex = function(index) {\n        return index;\n    }\n\n    vm.switchLayout = function (multiple) {\n        vm.multiplePhotosView = multiple;\n        if (!multiple) {\n            vm.imageCarousel.index = 0;\n        }\n    };\n\n    vm.addNewImages = function() {\n        vm.editEntityFormGroup.patchValue({meterPhoto: null});\n        vm.isEditMode = true;\n    };\n\n    vm.applyChanges = function() {\n        let newImage = {\n            url: vm.editEntityFormGroup.get('meterPhoto').value\n        };\n        vm.imagesData.imagesList.push(newImage);\n        vm.imageCarousel.index = vm.imagesData.imagesList.length - 1;\n        vm.isEditMode = false;\n        vm.editEntityFormGroup.markAsDirty();\n    };\n\n    vm.discardChanges = function() {\n        vm.isEditMode = false;\n    };\n\n    vm.deleteImage = function (index) {\n        if (index > -1) {\n            vm.imagesData.imagesList.splice(index, 1);\n            if (vm.imagesData.imagesList.length) {\n                vm.imagesData.mainImageIndex = 0;\n            } else {\n                vm.imagesData.mainImageIndex = -1;\n            }\n            vm.editEntityFormGroup.markAsDirty();\n        }\n    };\n\n    vm.selectAsMain = function (index) {\n        vm.imagesData.mainImageIndex = index;\n        vm.editEntityFormGroup.markAsDirty();\n    }\n\n    vm.deselectAsMain = function () {\n        vm.imagesData.mainImageIndex = 0;\n        vm.editEntityFormGroup.markAsDirty();\n    }\n\n    vm.onImagesCarouselIndexChanged = function() {\n\n    }\n\n    // vm.nextImage = function () {\n    //     $mdUtil.nextTick(function () {\n    //         if (vm.imageCarousel.index < vm.imagesData.imagesList.length - 1) {\n    //             vm.imageCarousel.index++;\n    //         }\n    //     });\n    // };\n    //\n    // vm.prevImage = function () {\n    //     $mdUtil.nextTick(function () {\n    //         if (vm.imageCarousel.index > 0) {\n    //             vm.imageCarousel.index--;\n    //         }\n    //     });\n    // };\n\n    function saveAttributes(entityId) {\n        let imagesDataToSave;\n        if (vm.imagesData.imagesList.length) {\n            imagesDataToSave = JSON.stringify(vm.imagesData);\n        } else {\n            imagesDataToSave = null;\n        }\n\n        const attributesArray =[{key: 'meterPhoto', value: imagesDataToSave}];\n\n        if (vm.attributes.meterPhoto !== imagesDataToSave) {\n            return attributeService.saveEntityAttributes(entityId, \"SERVER_SCOPE\", attributesArray);\n        }\n        return widgetContext.rxjs.of([]);\n    }\n\n    vm.getCustomTranslation = function(translationValue, defaultValue) {\n        let translation;\n        if (translationValue) {\n            translation = utils.customTranslation(translationValue, translationValue);\n            if (translation.includes(\"{i18n\")) {\n                translation = defaultValue;\n            }\n        } else {\n            translation = defaultValue;\n        }\n        return translation;\n    };\n}",
+                "customResources" : [ ],
+                "id" : "55b3640f-3fe1-d9a0-369b-5afefdb2373a"
+              } ]
+            },
+            "enableDataExport" : false,
+            "displayTimewindow" : true,
+            "showTitleIcon" : false,
+            "titleIcon" : "more_horiz",
+            "iconColor" : "rgba(0, 0, 0, 0.87)",
+            "iconSize" : "24px",
+            "titleTooltip" : ""
+          },
+          "id" : "fb50b767-9f76-4f98-4749-efdbd537b111"
+        },
+        "ec06d472-4381-e686-08d2-a99494a7909b" : {
+          "isSystemType" : true,
+          "bundleAlias" : "cards",
+          "typeAlias" : "simple_card",
+          "type" : "latest",
+          "title" : "Simple card",
+          "sizeX" : 10,
+          "sizeY" : 6,
+          "row" : 0,
+          "col" : 5,
+          "config" : {
+            "datasources" : [ {
+              "type" : "entity",
+              "entityAliasId" : "a7d8204d-9787-8373-217d-d85959ca150a",
+              "dataKeys" : [ {
+                "name" : "url",
+                "label" : "url",
+                "type" : "attribute",
+                "color" : "#2196f3",
+                "settings" : { },
+                "_hash" : 0.7294627189020777
+              } ]
+            } ],
+            "timewindow" : {
+              "displayValue" : "",
+              "selectedTab" : 0,
+              "realtime" : {
+                "realtimeType" : 1,
+                "interval" : 1000,
+                "timewindowMs" : 60000,
+                "quickInterval" : "CURRENT_DAY"
+              },
+              "history" : {
+                "historyType" : 0,
+                "interval" : 1000,
+                "timewindowMs" : 60000,
+                "fixedTimewindow" : {
+                  "startTimeMs" : 1670198272239,
+                  "endTimeMs" : 1670284672239
+                },
+                "quickInterval" : "CURRENT_DAY"
+              },
+              "aggregation" : {
+                "type" : "AVG",
+                "limit" : 2500
+              }
+            },
+            "showTitle" : false,
+            "backgroundColor" : "#ff5722",
+            "color" : "rgba(255, 255, 255, 0.87)",
+            "padding" : "16px",
+            "settings" : {
+              "labelPosition" : "top"
+            },
+            "title" : "Simple card",
+            "dropShadow" : true,
+            "enableFullscreen" : true,
+            "titleStyle" : {
+              "fontSize" : "16px",
+              "fontWeight" : 400
+            },
+            "units" : "°C",
+            "decimals" : 0,
+            "useDashboardTimewindow" : true,
+            "showLegend" : false,
+            "widgetStyle" : { },
+            "actions" : { }
+          },
+          "id" : "ec06d472-4381-e686-08d2-a99494a7909b"
+        },
+        "09270a4b-69c4-6f8d-33d8-4dfffd3f4ad6" : {
+          "isSystemType" : true,
+          "bundleAlias" : "control_widgets",
+          "typeAlias" : "rpcbutton",
+          "type" : "rpc",
+          "title" : "New widget",
+          "image" : null,
+          "description" : null,
+          "sizeX" : 4,
+          "sizeY" : 2,
+          "config" : {
+            "targetDeviceAliases" : [ ],
+            "showTitle" : true,
+            "backgroundColor" : "#e6e7e8",
+            "color" : "rgba(0, 0, 0, 0.87)",
+            "padding" : "0px",
+            "settings" : {
+              "buttonText" : "Action",
+              "oneWayElseTwoWay" : true,
+              "methodName" : "doorTrigger",
+              "methodParams" : "{}",
+              "requestTimeout" : 5000,
+              "showError" : false,
+              "requestPersistent" : false,
+              "styleButton" : {
+                "isRaised" : true,
+                "isPrimary" : false
+              }
+            },
+            "title" : "Trigger door",
+            "dropShadow" : true,
+            "enableFullscreen" : false,
+            "widgetStyle" : { },
+            "titleStyle" : {
+              "fontSize" : "16px",
+              "fontWeight" : 400
+            },
+            "useDashboardTimewindow" : true,
+            "showLegend" : false,
+            "actions" : { },
+            "datasources" : [ ],
+            "targetDeviceAliasIds" : [ "f5e98dab-2b31-6159-afdf-fb921fc06b4f" ],
+            "widgetCss" : "",
+            "pageSize" : 1024,
+            "noDataDisplayMessage" : "",
+            "showTitleIcon" : true,
+            "titleTooltip" : "",
+            "titleIcon" : "door_front",
+            "iconColor" : "rgba(0, 0, 0, 0.87)",
+            "iconSize" : "24px"
+          },
+          "row" : 0,
+          "col" : 0,
+          "id" : "09270a4b-69c4-6f8d-33d8-4dfffd3f4ad6"
+        },
+        "d57481ff-a398-2d17-265c-0f01d702dd61" : {
+          "isSystemType" : true,
+          "bundleAlias" : "control_widgets",
+          "typeAlias" : "rpcbutton",
+          "type" : "rpc",
+          "title" : "New widget",
+          "image" : null,
+          "description" : null,
+          "sizeX" : 4,
+          "sizeY" : 2,
+          "config" : {
+            "targetDeviceAliases" : [ ],
+            "showTitle" : true,
+            "backgroundColor" : "#e6e7e8",
+            "color" : "rgba(0, 0, 0, 0.87)",
+            "padding" : "0px",
+            "settings" : {
+              "buttonText" : "Open",
+              "oneWayElseTwoWay" : true,
+              "methodName" : "cutEngine",
+              "methodParams" : "{\n    \"msg\": {\n        \"method\": \"cutEngine\",\n        \"params\": {}\n    },\n    \"metadata\": {\n        \"oneway\": true,\n        \"persistent\": true,\n        \"deviceName\": \"NodeMCU ESP8266 2\"\n    },\n    \"msgType\": \"RPC_CALL_FROM_SERVER_TO_DEVICE\"\n}",
+              "requestTimeout" : 5000,
+              "showError" : false,
+              "requestPersistent" : false,
+              "styleButton" : {
+                "isRaised" : true,
+                "isPrimary" : false
+              }
+            },
+            "title" : "Shut down gas pipe",
+            "dropShadow" : true,
+            "enableFullscreen" : false,
+            "widgetStyle" : { },
+            "titleStyle" : {
+              "fontSize" : "16px",
+              "fontWeight" : 400
+            },
+            "useDashboardTimewindow" : true,
+            "showLegend" : false,
+            "actions" : { },
+            "datasources" : [ ],
+            "targetDeviceAliasIds" : [ "f5e98dab-2b31-6159-afdf-fb921fc06b4f" ],
+            "showTitleIcon" : true,
+            "titleTooltip" : "",
+            "widgetCss" : "",
+            "pageSize" : 1024,
+            "noDataDisplayMessage" : "",
+            "titleIcon" : "water_drop",
+            "iconColor" : "rgba(0,135,255,0.87)",
+            "iconSize" : "24px"
+          },
+          "row" : 0,
+          "col" : 0,
+          "id" : "d57481ff-a398-2d17-265c-0f01d702dd61"
+        }
+      },
+      "states" : {
+        "default" : {
+          "name" : "Car Status",
+          "root" : true,
+          "layouts" : {
+            "main" : {
+              "widgets" : {
+                "4d16a7c5-ffde-f048-e958-0112977fe2e8" : {
+                  "sizeX" : 4,
+                  "sizeY" : 4,
+                  "row" : 0,
+                  "col" : 0
+                },
+                "e18b70a5-0dfc-992d-b8f4-197a75b50665" : {
+                  "sizeX" : 8,
+                  "sizeY" : 6,
+                  "row" : 0,
+                  "col" : 4
+                },
+                "9e6ca65e-9005-aa70-051b-b9e3020eb6c2" : {
+                  "sizeX" : 4,
+                  "sizeY" : 2,
+                  "row" : 6,
+                  "col" : 0
+                },
+                "2263fcfc-5bd2-074a-738b-90da3e6271b6" : {
+                  "sizeX" : 4,
+                  "sizeY" : 2,
+                  "row" : 6,
+                  "col" : 8
+                },
+                "fb50b767-9f76-4f98-4749-efdbd537b111" : {
+                  "sizeX" : 7,
+                  "sizeY" : 6,
+                  "row" : 0,
+                  "col" : 12
+                },
+                "ec06d472-4381-e686-08d2-a99494a7909b" : {
+                  "sizeX" : 7,
+                  "sizeY" : 2,
+                  "row" : 6,
+                  "col" : 12
+                },
+                "09270a4b-69c4-6f8d-33d8-4dfffd3f4ad6" : {
+                  "sizeX" : 4,
+                  "sizeY" : 2,
+                  "row" : 6,
+                  "col" : 4
+                },
+                "d57481ff-a398-2d17-265c-0f01d702dd61" : {
+                  "sizeX" : 4,
+                  "sizeY" : 2,
+                  "row" : 4,
+                  "col" : 0
+                }
+              },
+              "gridSettings" : {
+                "backgroundColor" : "#eeeeee",
+                "columns" : 24,
+                "margin" : 10,
+                "backgroundSizeMode" : "100%"
+              }
+            }
+          }
+        }
+      },
+      "entityAliases" : {
+        "b5392112-2266-c876-adac-6159cad91c04" : {
+          "id" : "b5392112-2266-c876-adac-6159cad91c04",
+          "alias" : "Movement sensor",
+          "filter" : {
+            "type" : "singleEntity",
+            "resolveMultiple" : false,
+            "singleEntity" : {
+              "entityType" : "DEVICE",
+              "id" : "89e3c730-2fd1-11ed-89c2-7b8e9c33fd73"
+            }
+          }
+        },
+        "5f6e2a27-c507-31f9-54c2-d9474c760e52" : {
+          "id" : "5f6e2a27-c507-31f9-54c2-d9474c760e52",
+          "alias" : "Door lock",
+          "filter" : {
+            "type" : "singleEntity",
+            "resolveMultiple" : false,
+            "singleEntity" : {
+              "entityType" : "DEVICE",
+              "id" : "4242d970-49bc-11ed-b827-c9be76c6f5d7"
+            }
+          }
+        },
+        "f5e98dab-2b31-6159-afdf-fb921fc06b4f" : {
+          "id" : "f5e98dab-2b31-6159-afdf-fb921fc06b4f",
+          "alias" : "Engine unlock",
+          "filter" : {
+            "type" : "deviceType",
+            "resolveMultiple" : true,
+            "deviceType" : "Lock system",
+            "deviceNameFilter" : ""
+          }
+        },
+        "d9c19d08-4aa0-a847-d247-35dddbf0755b" : {
+          "id" : "d9c19d08-4aa0-a847-d247-35dddbf0755b",
+          "alias" : "State",
+          "filter" : {
+            "type" : "stateEntity",
+            "resolveMultiple" : false,
+            "stateEntityParamName" : null,
+            "defaultStateEntity" : null
+          }
+        },
+        "a7d8204d-9787-8373-217d-d85959ca150a" : {
+          "id" : "a7d8204d-9787-8373-217d-d85959ca150a",
+          "alias" : "Image Data",
+          "filter" : {
+            "type" : "singleEntity",
+            "resolveMultiple" : false,
+            "singleEntity" : {
+              "entityType" : "DEVICE",
+              "id" : "e77a9560-4b54-11ed-b827-c9be76c6f5d7"
+            }
+          }
+        },
+        "bd88c575-6002-28fe-86f4-8f6267665443" : {
+          "id" : "bd88c575-6002-28fe-86f4-8f6267665443",
+          "alias" : "Smoke toggle",
+          "filter" : {
+            "type" : "singleEntity",
+            "resolveMultiple" : false,
+            "singleEntity" : {
+              "entityType" : "DEVICE",
+              "id" : "a1f7b070-6230-11ed-ba8d-397cb798fce2"
+            }
+          }
+        },
+        "da9cbd66-8a20-e455-95de-384785d8b154" : {
+          "id" : "da9cbd66-8a20-e455-95de-384785d8b154",
+          "alias" : "Smoke Data",
+          "filter" : {
+            "type" : "singleEntity",
+            "resolveMultiple" : false,
+            "singleEntity" : {
+              "entityType" : "DEVICE",
+              "id" : "a1f7b070-6230-11ed-ba8d-397cb798fce2"
+            }
+          }
+        }
+      },
+      "filters" : { },
+      "timewindow" : {
+        "hideInterval" : false,
+        "hideLastInterval" : false,
+        "hideQuickInterval" : false,
+        "hideAggregation" : false,
+        "hideAggInterval" : false,
+        "hideTimezone" : false,
+        "selectedTab" : 1,
+        "history" : {
+          "historyType" : 0,
+          "timewindowMs" : 60000,
+          "interval" : 5000,
+          "fixedTimewindow" : {
+            "startTimeMs" : 1667869325865,
+            "endTimeMs" : 1667955725865
+          },
+          "quickInterval" : "CURRENT_DAY"
+        },
+        "aggregation" : {
+          "type" : "AVG",
+          "limit" : 2500
+        }
+      },
+      "settings" : {
+        "stateControllerId" : "entity",
+        "showTitle" : false,
+        "showDashboardsSelect" : true,
+        "showEntitiesSelect" : true,
+        "showDashboardTimewindow" : true,
+        "showDashboardExport" : true,
+        "toolbarAlwaysOpen" : true
+      }
+    },
+    "externalId" : null,
+    "id" : {
+      "entityType" : "DASHBOARD",
+      "id" : "e7120190-3ad7-11ed-b827-c9be76c6f5d7"
+    },
+    "image" : null,
+    "mobileHide" : false,
+    "mobileOrder" : null,
+    "name" : "Car Status",
+    "title" : "Car Status"
+  },
+  "relations" : [ ],
+  "attributes" : {
+    "SERVER_SCOPE" : [ ]
+  }
+}
