@@ -7,8 +7,8 @@
  * WiFi credentials
  **/
 
-const char *wifi_ssid = "Happy Guests";
-const char *wifi_password = "Pascualina25";
+const char *wifi_ssid = "";
+const char *wifi_password = "";
 
 /**
  * ThingsBoard
