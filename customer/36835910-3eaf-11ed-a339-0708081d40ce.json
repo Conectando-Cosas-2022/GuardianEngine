@@ -1,0 +1,29 @@
+{
+  "entityType" : "CUSTOMER",
+  "entity" : {
+    "additionalInfo" : {
+      "description" : "Customer of the Car with Guardian Engine installed",
+      "homeDashboardId" : null,
+      "homeDashboardHideToolbar" : true
+    },
+    "address" : "",
+    "address2" : "",
+    "city" : "Montevideo",
+    "country" : "Uruguay",
+    "email" : "asadicml@gmail.com",
+    "externalId" : null,
+    "id" : {
+      "entityType" : "CUSTOMER",
+      "id" : "36835910-3eaf-11ed-a339-0708081d40ce"
+    },
+    "name" : "Car owner A",
+    "phone" : null,
+    "state" : "Montevideo",
+    "title" : "Car owner A",
+    "zip" : "11600"
+  },
+  "relations" : [ ],
+  "attributes" : {
+    "SERVER_SCOPE" : [ ]
+  }
+}
